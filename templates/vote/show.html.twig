@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Vote{% endblock %}
+
+{% block body %}
+    <h1>Vote</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ vote.id }}</td>
+            </tr>
+            <tr>
+                <th>CreatedAt</th>
+                <td>{{ vote.createdAt ? vote.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Adresse_ip</th>
+                <td>{{ vote.adresseIp }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_vote_index') }}">back to list</a>
+
+    <a href="{{ path('app_vote_edit', {'id': vote.id}) }}">edit</a>
+
+    {{ include('vote/_delete_form.html.twig') }}
+{% endblock %}

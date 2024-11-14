@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Signalement index{% endblock %}
+
+{% block body %}
+    <h1>Signalement index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Raison</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for signalement in signalements %}
+            <tr>
+                <td>{{ signalement.id }}</td>
+                <td>{{ signalement.raison }}</td>
+                <td>
+                    <a href="{{ path('app_signalement_show', {'id': signalement.id}) }}">show</a>
+                    <a href="{{ path('app_signalement_edit', {'id': signalement.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_signalement_new') }}">Create new</a>
+{% endblock %}
