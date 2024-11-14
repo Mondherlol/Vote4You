@@ -1,0 +1,40 @@
+{# templates/partials/navbar.html.twig #}
+<nav class="navbar navbar-expand-lg  shadow-sm" style="background:transparent!important">
+    <div class="container">
+        <a class="navbar-brand fw-bold text-uppercase" href="{{ path('home') }}" style="font-family: 'Mazin', sans-serif; font-size: 1.5rem; letter-spacing: 1px;">
+            VOTE <span style="color:darkgreen; font-family: 'Kap'; ">4</span> YOU
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto" style="font-family: 'Springwood'">
+                <li class="nav-item">
+                    <a class="nav-link " href="{{ path('home') }}">Accueil</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/">S'inscrire</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/">Se connecter</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<style>
+    /* Styles additionnels pour la navbar */
+    .navbar-brand {
+        transition: color 0.3s ease;
+    }
+    .navbar-brand:hover {
+        color: yellowgreen; /* Couleur dorée pour l'effet de survol */
+    }
+    .nav-link {
+        transition: color 0.3s ease;
+    }
+    .nav-link:hover {
+        color: yellowgreen; /* Ajout d’un effet de survol */
+    }
+</style>

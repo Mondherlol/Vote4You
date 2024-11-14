@@ -1,0 +1,167 @@
+
+body{
+    background: linear-gradient(145deg, #98ff78, #2bdb83);
+
+}
+@font-face {
+    font-family: 'Springwood';
+    src: url('../fonts/Springwood_Note_DEMO.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+
+@font-face {
+    font-family: 'Kap';
+    src: url('../fonts/Kap.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+
+
+/* Mazin Regular */
+@font-face {
+    font-family: 'Mazin';
+    src: url('../fonts/MazinDEMO-Regular.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+/* Mazin Regular Italic */
+@font-face {
+    font-family: 'Mazin';
+    src: url('../fonts/MazinDEMO-Italic.otf') format('opentype');
+    font-weight: 400;
+    font-style: italic;
+}
+
+/* Mazin Light */
+@font-face {
+    font-family: 'Mazin';
+    src: url('../fonts/MazinDEMO-Light.otf') format('opentype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+/* Mazin Light Italic */
+@font-face {
+    font-family: 'Mazin';
+    src: url('../fonts/MazinDEMO-LightItalic.otf') format('opentype');
+    font-weight: 300;
+    font-style: italic;
+}
+
+/* Mazin ExtraLight */
+@font-face {
+    font-family: 'Mazin';
+    src: url('../fonts/MazinDEMO-ExtraLight.otf') format('opentype');
+    font-weight: 200;
+    font-style: normal;
+}
+
+/* Mazin ExtraLight Italic */
+@font-face {
+    font-family: 'Mazin';
+    src: url('../fonts/MazinDEMO-ExtraLightItalic.otf') format('opentype');
+    font-weight: 200;
+    font-style: italic;
+}
+
+/* Mazin Medium */
+@font-face {
+    font-family: 'Mazin';
+    src: url('../fonts/MazinDEMO-Medium.otf') format('opentype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+/* Mazin Medium Italic */
+@font-face {
+    font-family: 'Mazin';
+    src: url('../fonts/MazinDEMO-MediumItalic.otf') format('opentype');
+    font-weight: 500;
+    font-style: italic;
+}
+
+/* Mazin SemiBold */
+@font-face {
+    font-family: 'Mazin';
+    src: url('../fonts/MazinDEMO-SemiBold.otf') format('opentype');
+    font-weight: 600;
+    font-style: normal;
+}
+
+/* Mazin SemiBold Italic */
+@font-face {
+    font-family: 'Mazin';
+    src: url('../fonts/MazinDEMO-SemiBoldItalic.otf') format('opentype');
+    font-weight: 600;
+    font-style: italic;
+}
+
+/* Mazin Bold */
+@font-face {
+    font-family: 'Mazin';
+    src: url('../fonts/MazinDEMO-Bold.otf') format('opentype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+/* Mazin Bold Italic */
+@font-face {
+    font-family: 'Mazin';
+    src: url('../fonts/MazinDEMO-BoldItalic.otf') format('opentype');
+    font-weight: 700;
+    font-style: italic;
+}
+
+/* Mazin ExtraBold */
+@font-face {
+    font-family: 'Mazin';
+    src: url('../fonts/MazinDEMO-ExtraBold.otf') format('opentype');
+    font-weight: 800;
+    font-style: normal;
+}
+
+/* Mazin ExtraBold Italic */
+@font-face {
+    font-family: 'Mazin';
+    src: url('../fonts/MazinDEMO-ExtraBoldItalic.otf') format('opentype');
+    font-weight: 800;
+    font-style: italic;
+}
+
+/* Mazin Black */
+@font-face {
+    font-family: 'Mazin';
+    src: url('../fonts/MazinDEMO-Black.otf') format('opentype');
+    font-weight: 900;
+    font-style: normal;
+}
+
+/* Mazin Black Italic */
+@font-face {
+    font-family: 'Mazin';
+    src: url('../fonts/MazinDEMO-BlackItalic.otf') format('opentype');
+    font-weight: 900;
+    font-style: italic;
+}
+
+/* Mazin Thin */
+@font-face {
+    font-family: 'Mazin';
+    src: url('../fonts/MazinDEMO-Thin.otf') format('opentype');
+    font-weight: 100;
+    font-style: normal;
+}
+
+/* Mazin Thin Italic */
+@font-face {
+    font-family: 'Mazin';
+    src: url('../fonts/MazinDEMO-ThinItalic.otf') format('opentype');
+    font-weight: 100;
+    font-style: italic;
+}
+
+
