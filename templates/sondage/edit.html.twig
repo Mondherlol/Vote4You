@@ -3,11 +3,113 @@
 {% block title %}Edit Sondage{% endblock %}
 
 {% block body %}
-    <h1>Edit Sondage</h1>
+<h1>Modifier le sondage</h1>
 
-    {{ include('sondage/_form.html.twig', {'button_label': 'Update'}) }}
+{{ form_start(form) }}
 
-    <a href="{{ path('app_sondage_index') }}">back to list</a>
+<!-- Titre -->
+<div class="form-group">
+    {{ form_label(form.titre, 'Titre du sondage') }}
+    {{ form_widget(form.titre, { 'attr': { 'class': 'form-control' } }) }}
+    {{ form_errors(form.titre) }}
+</div>
 
-    {{ include('sondage/_delete_form.html.twig') }}
+<!-- Description -->
+<div class="form-group">
+    {{ form_label(form.description, 'Description') }}
+    {{ form_widget(form.description, { 'attr': { 'class': 'form-control' } }) }}
+    {{ form_errors(form.description) }}
+</div>
+
+<!-- Sondage Public -->
+<div class="form-group">
+    {{ form_label(form.publique, 'Sondage publique ?') }}
+    {{ form_widget(form.publique) }}
+    {{ form_errors(form.publique) }}
+</div>
+
+<!-- Date d'expiration -->
+<div class="form-group">
+    {{ form_label(form.date_fin, 'Date d’expiration') }}
+    {{ form_widget(form.date_fin, { 'attr': { 'class': 'form-control' } }) }}
+    {{ form_errors(form.date_fin) }}
+</div>
+
+<!-- Image -->
+<div class="form-group">
+    {{ form_label(form.image, 'Image du sondage') }}
+    {{ form_widget(form.image, { 'attr': { 'class': 'form-control' } }) }}
+    {{ form_errors(form.image) }}
+</div>
+
+<!-- Thèmes -->
+<div class="form-group">
+    <label for="themes">Thèmes associés</label>
+    <div id="themes">
+        {% for theme in themes %}
+            <input type="text" name="themes[]" class="form-control mt-2" value="{{ theme }}" placeholder="Nom du thème">
+        {% endfor %}
+        <button type="button" id="add-theme" class="btn btn-secondary mt-2">Ajouter un thème</button>
+    </div>
+</div>
+
+<!-- Choix -->
+<div class="form-group">
+    <label for="choices">Choix associés</label>
+    <div id="choices">
+        {% for choix in choix %}
+            <div class="choice mt-2">
+                <input type="text" name="choix[][titreChoix]" class="form-control" placeholder="Titre du choix" value="{{ choix.titreChoix }}">
+                <input type="text" name="choix[][imageChoix]" class="form-control mt-1" placeholder="URL de l'image (facultatif)" value="{{ choix.imageChoix }}">
+            </div>
+        {% endfor %}
+        <button type="button" id="add-choice" class="btn btn-secondary mt-2">Ajouter un choix</button>
+    </div>
+</div>
+
+<button type="submit" class="btn btn-primary">Mettre à jour le sondage</button>
+
+{{ form_end(form) }}
+<a href="{{ path('app_sondage_index') }}">Retour à la liste</a>
+
+<script>
+    // Ajouter un thème
+    document.getElementById('add-theme').addEventListener('click', function () {
+        const container = document.getElementById('themes');
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.name = 'themes[]';
+        input.classList.add('form-control', 'mt-2');
+        input.placeholder = 'Nom du thème';
+        container.insertBefore(input, this); // Insère avant le bouton "Ajouter un thème"
+    });
+
+    // Ajouter un choix
+    document.getElementById('add-choice').addEventListener('click', function () {
+        const container = document.getElementById('choices');
+
+        const choiceDiv = document.createElement('div');
+        choiceDiv.classList.add('choice', 'mt-2');
+
+        // Champ pour le titre du choix
+        const inputTitle = document.createElement('input');
+        inputTitle.type = 'text';
+        inputTitle.name = `choix[][titreChoix]`;
+        inputTitle.classList.add('form-control');
+        inputTitle.placeholder = 'Titre du choix';
+
+        // Champ pour l'URL de l'image
+        const inputImage = document.createElement('input');
+        inputImage.type = 'text';
+        inputImage.name = `choix[][imageChoix]`;
+        inputImage.classList.add('form-control', 'mt-1');
+        inputImage.placeholder = 'URL de l\'image (facultatif)';
+
+        // Ajoute les champs dans le conteneur de choix
+        choiceDiv.appendChild(inputTitle);
+        choiceDiv.appendChild(inputImage);
+        container.insertBefore(choiceDiv, this); // Insère avant le bouton "Ajouter un choix"
+    });
+</script>
+
 {% endblock %}

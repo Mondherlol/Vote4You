@@ -22,18 +22,12 @@ class SondageType extends AbstractType
             ->add('date_fin', null, [
                 'widget' => 'single_text',
             ])
-            ->add('createdAt', null, [
-                'widget' => 'single_text',
-            ])
+
             ->add('id_owner', EntityType::class, [
                 'class' => Utilisateur::class,
                 'choice_label' => 'id',
             ])
-            ->add('themes', EntityType::class, [
-                'class' => Theme::class,
-                'choice_label' => 'id',
-                'multiple' => true,
-            ])
+
         ;
     }
 

@@ -47,7 +47,7 @@ class Sondage
     /**
      * @var Collection<int, Choix>
      */
-    #[ORM\OneToMany(targetEntity: Choix::class, mappedBy: 'sondage')]
+    #[ORM\OneToMany(targetEntity: Choix::class, mappedBy: 'sondage', cascade: ['remove'])]
     private Collection $choix;
 
     /**

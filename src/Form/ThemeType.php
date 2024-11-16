@@ -15,11 +15,11 @@ class ThemeType extends AbstractType
     {
         $builder
             ->add('libelle')
-            ->add('sondages', EntityType::class, [
+            /*->add('sondages', EntityType::class, [
                 'class' => Sondage::class,
                 'choice_label' => 'id',
                 'multiple' => true,
-            ])
+            ])*/
         ;
     }
 
