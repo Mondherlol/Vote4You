@@ -13,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 
 #[Route('/sondage')]
 final class SondageController extends AbstractController
@@ -26,8 +27,16 @@ final class SondageController extends AbstractController
     }
 
     #[Route('/new', name: 'app_sondage_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, ThemeRepository $themeRepository): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, ThemeRepository $themeRepository, UploaderHelper $uploaderHelper): Response
     {
+        // Vérifier si l'utilisateur est connecté
+        /*$user = $this->getUser();
+        if (!$user) {
+            // Si l'utilisateur n'est pas connecté, rediriger vers la page de connexion
+            $this->addFlash('error', 'Vous devez être connecté pour ajouter un sondage.');
+            return $this->redirectToRoute('app_utilisateur_login'); // Remplacez 'app_utilisateur_login' par le nom de votre route de connexion
+        }*/
+
         $sondage = new Sondage();
         $form = $this->createForm(SondageType::class, $sondage);
         $form->handleRequest($request);
@@ -39,6 +48,7 @@ final class SondageController extends AbstractController
             // Sauvegarder le sondage dans la base de données pour générer un ID
             $entityManager->persist($sondage);
             $entityManager->flush();
+           // $uploaderHelper->asset($sondage, 'image')->store('uploads/images');
 
             // Récupère les données des thèmes depuis la requête (assurez-vous que le champ envoie un tableau de données)
             $themesData = $request->request->all('themes'); // Utilise 'all' pour récupérer les données de type tableau
@@ -66,12 +76,18 @@ final class SondageController extends AbstractController
 
             // Ajouter les choix associés
             $choixData = $request->request->all('choix');
+
             foreach ($choixData as $choixItem) {
                 if (!empty($choixItem['titreChoix'])) { // Vérifie que le titre est rempli
                     $choix = new Choix();
                     $choix->setTitre($choixItem['titreChoix']);
-                    $choix->setImageChoix($choixItem['imageChoix'] ?? null); // Facultatif
+                    if (!empty($choixItem['imageChoixFile'])) {
+                        $imageFile = $form->get('imageChoixFile')->getData();
+
+                        $choix->setImageChoix($imageFile);
+                    }
                     $choix->setSondage($sondage);
+
                     $sondage->addChoix($choix);
                     $entityManager->persist($choix);
                 }
@@ -109,7 +125,6 @@ final class SondageController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
 
             // Gérer les thèmes associés
             $themesData = $request->request->all('themes'); // Récupérer les thèmes depuis la requête

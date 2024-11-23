@@ -40,4 +40,14 @@ class SondageRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function findByTitleLike(string $query): array
+    {
+        return $this->createQueryBuilder('s')
+            ->where('s.titre LIKE :query')
+            ->setParameter('query', '%' . $query . '%')
+            ->getQuery()
+            ->getResult();
+    }
+
 }

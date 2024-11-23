@@ -6,7 +6,10 @@ use App\Repository\ChoixRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\HttpFoundation\File\File;
 
+#[Vich\Uploadable]
 #[ORM\Entity(repositoryClass: ChoixRepository::class)]
 class Choix
 {
@@ -20,7 +23,8 @@ class Choix
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $imageChoix = null;
-
+    #[Vich\UploadableField(mapping: 'choix_image', fileNameProperty: 'imageChoix')]
+    private ?File $imageChoixFile = null;
     #[ORM\ManyToOne(inversedBy: 'choix')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Sondage $sondage = null;
@@ -65,6 +69,16 @@ class Choix
         $this->imageChoix = $imageChoix;
 
         return $this;
+    }
+    public function setImageChoixFile(?File $file = null): void
+    {
+        $this->imageChoixFile = $file;
+
+    }
+
+    public function getImageChoixFile(): ?File
+    {
+        return $this->imageChoixFile;
     }
 
     public function getSondage(): ?Sondage

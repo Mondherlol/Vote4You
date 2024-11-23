@@ -7,6 +7,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\HttpFoundation\File\File;
+
+#[Vich\Uploadable]
 
 #[ORM\Entity(repositoryClass: SondageRepository::class)]
 class Sondage
@@ -25,6 +29,8 @@ class Sondage
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
 
+    #[Vich\UploadableField(mapping: 'sondage_image', fileNameProperty: 'image')]
+    private ?File $imageFile = null;
     #[ORM\Column]
     private ?bool $publique = null;
 
@@ -97,13 +103,23 @@ class Sondage
         return $this->image;
     }
 
-    public function setImage(?string $image): static
+    public function setImage(?string $image): self
     {
-        $this->image = $image;
+        $this->image = $image ;
 
         return $this;
     }
 
+    public function setImageFile(?File $file = null): void
+    {
+        $this->imageFile = $file;
+
+    }
+
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
 
     public function isPublique(): ?bool
     {
@@ -235,5 +251,25 @@ class Sondage
         }
 
         return $this;
+    }
+
+    // Méthodes pour gérer le fichier d'image
+    public function getUploadDir(): string
+    {
+        // Retourne le chemin relatif pour stocker les fichiers téléchargés
+        return 'uploads/images';
+    }
+
+    public function getWebPath(): ?string
+    {
+        return $this->getUploadDir() . '/' . $this->image;
+    }
+    // Méthode pour obtenir l'URL de l'image
+    public function getImageUrl(): ?string
+    {
+        if ($this->image) {
+            return '/uploads/sondages/' . $this->image->getFilename();
+        }
+        return null;
     }
 }

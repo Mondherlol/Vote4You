@@ -35,12 +35,25 @@
     {{ form_errors(form.date_fin) }}
 </div>
 
-<!-- Image -->
-<div class="form-group">
-    {{ form_label(form.image, 'Image du sondage') }}
-    {{ form_widget(form.image, { 'attr': { 'class': 'form-control' } }) }}
-    {{ form_errors(form.image) }}
-</div>
+    <!-- Afficher l'image actuelle -->
+    <div class="form-group">
+        <label for="current-image">Image actuelle</label>
+        {% if sondage.image %}
+            <div>
+                <img src="{{ asset('uploads/sondages/' ~ sondage.image) }}" alt="Image actuelle" style="max-width: 200px; height: auto;">
+            </div>
+        {% else %}
+            <p>Aucune image disponible.</p>
+        {% endif %}
+    </div>
+
+    <!-- Champ pour télécharger une nouvelle image -->
+    <div class="form-group">
+        {{ form_label(form.imageFile, 'Changer l\'image') }}
+        {{ form_widget(form.imageFile, { 'attr': { 'class': 'form-control-file' } }) }}
+        {{ form_errors(form.imageFile) }}
+    </div>
+
 
 <!-- Thèmes -->
 <div class="form-group">

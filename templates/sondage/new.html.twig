@@ -5,6 +5,7 @@
 {% block body %}
     <h1>Ajouter un nouveau sondage</h1>
 
+
     {{ form_start(form) }}
 
     <!-- Titre -->
@@ -37,9 +38,9 @@
 
     <!-- Image -->
     <div class="form-group">
-        {{ form_label(form.image, 'Image du sondage') }}
-        {{ form_widget(form.image, { 'attr': { 'class': 'form-control' } }) }}
-        {{ form_errors(form.image) }}
+        {{ form_label(form.imageFile, 'Image du sondage') }}
+        {{ form_widget(form.imageFile, { 'attr': { 'class': 'form-control-file' } }) }}
+        {{ form_errors(form.imageFile) }}
     </div>
 
     <!-- Thèmes -->
@@ -51,18 +52,24 @@
         </div>
     </div>
 
-    <!-- Choix -->
+
     <div class="form-group">
         <label for="choices">Choix associés</label>
         <div id="choices">
-            <div class="choice">
-                <input type="text" name="choix[][titreChoix]" class="form-control" placeholder="Titre du choix">
-                <input type="text" name="choix[][imageChoix]" class="form-control mt-1" placeholder="URL de l'image (facultatif)">
-            </div>
-            <button type="button" id="add-choice" class="btn btn-secondary mt-2">Ajouter un choix</button>
-        </div>
-    </div>
+            <!-- Premier choix -->
+            <div class="choice mt-2">
+                <!-- Titre du choix -->
+                <input type="text" name="choix[0][titreChoix]" class="form-control" placeholder="Titre du choix">
 
+                <!-- Image du choix -->
+                <label for="choix[0][imageChoixFile]">Image du choix (facultatif)</label>
+                <input type="file" name="choix[0][imageChoixFile]" class="form-control-file mt-1">
+            </div>
+        </div>
+
+        <!-- Bouton pour ajouter un nouveau choix -->
+        <button type="button" id="add-choice" class="btn btn-secondary mt-2">Ajouter un choix</button>
+    </div>
     <button type="submit" class="btn btn-primary">Créer le sondage</button>
 
     {{ form_end(form) }}
@@ -81,30 +88,37 @@
         });
 
         // Ajouter un choix
+        // Fonction pour ajouter un choix
+        let choiceIndex = 1; // Gère les index des choix dynamiques
+
         document.getElementById('add-choice').addEventListener('click', function () {
             const container = document.getElementById('choices');
 
+            // Créer une nouvelle div pour un choix
             const choiceDiv = document.createElement('div');
             choiceDiv.classList.add('choice', 'mt-2');
 
-            // Champ pour le titre du choix
+            // Titre du choix
             const inputTitle = document.createElement('input');
             inputTitle.type = 'text';
-            inputTitle.name = `choix[][titreChoix]`;
+            inputTitle.name = 'choix[${choiceIndex}][titreChoix]';
             inputTitle.classList.add('form-control');
             inputTitle.placeholder = 'Titre du choix';
 
-            // Champ pour l'URL de l'image
+            // Image du choix
             const inputImage = document.createElement('input');
-            inputImage.type = 'text';
-            inputImage.name = `choix[][imageChoix]`;
-            inputImage.classList.add('form-control', 'mt-1');
-            inputImage.placeholder = 'URL de l\'image (facultatif)';
+            inputImage.type = 'file';
+            inputImage.name = 'choix[${choiceIndex}][imageChoixFile]';
+            inputImage.classList.add('form-control-file', 'mt-1');
 
-            // Ajoute les champs dans le conteneur de choix
+            // Ajouter les champs dans la div
             choiceDiv.appendChild(inputTitle);
             choiceDiv.appendChild(inputImage);
-            container.insertBefore(choiceDiv, this); // Insère avant le bouton "Ajouter un choix"
+
+            // Ajouter la nouvelle div au conteneur
+            container.appendChild(choiceDiv);
+            // Incrémenter l'index des choix
+            choiceIndex++;
         });
     </script>
 
