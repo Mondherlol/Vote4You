@@ -4,14 +4,10 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
-    uploader.sondage_image:
-        uploader.sondage_image: '%kernel.project_dir%/public/uploads/sondages'
-        namer: vich_uploader.namer_uniqid
-        delete_on_remove: true
-    uploader.choix_image:
-        uploader.choix_image: '%kernel.project_dir%/public/uploads/choix'
-        namer: vich_uploader.namer_uniqid
-        delete_on_remove: true
+    uploader.sondage_image: '%kernel.project_dir%/public/uploads/sondages'
+    uploader.choix_image: '%kernel.project_dir%/public/uploads/choix'
+    namer: vich_uploader.namer_uniqid  # Optionnel : dépend de l'implémentation de VichUploaderBundle
+
 services:
     # default configuration for services in *this* file
     _defaults:

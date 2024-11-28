@@ -138,23 +138,5 @@ class HomeController extends AbstractController
         return $interval->format('%d jours %h heures %i minutes'); // Exemple de format
     }
 
-    #[Route('/voter/{id}', name: 'vote')]
-    public function vote(int $id, SondageRepository $sondageRepository, UtilisateurRepository $userRepository): Response
-    {
-        $users = $userRepository->findAll();
-
-        // Récupérer le sondage par son ID
-        $sondage = $sondageRepository->find($id);
-        if (!$sondage) {
-            throw $this->createNotFoundException('Sondage introuvable.');
-        }
-
-        // Rendre la vue avec les détails du sondage et les choix associés
-        return $this->render('vote/new.html.twig', [
-            'sondage' => $sondage,
-            'users' => $users,
-            'choices' => $sondage->getChoix(), // Les choix associés au sondage
-        ]);
-    }
 
 }

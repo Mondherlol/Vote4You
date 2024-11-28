@@ -7,6 +7,7 @@ use App\Entity\Utilisateur;
 use App\Entity\Vote;
 use App\Form\VoteType;
 use App\Repository\SondageRepository;
+use App\Repository\UtilisateurRepository;
 use App\Repository\VoteRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -121,5 +122,25 @@ final class VoteController extends AbstractController
         $this->addFlash('success', 'Votre vote a été enregistré avec succès.');
         return $this->redirectToRoute('home');
     }
+
+    #[\Symfony\Component\Routing\Annotation\Route('/voter/{id}', name: 'vote')]
+    public function vote(int $id, SondageRepository $sondageRepository, UtilisateurRepository $userRepository): Response
+    {
+        $users = $userRepository->findAll();
+
+        // Récupérer le sondage par son ID
+        $sondage = $sondageRepository->find($id);
+        if (!$sondage) {
+            throw $this->createNotFoundException('Sondage introuvable.');
+        }
+
+        // Rendre la vue avec les détails du sondage et les choix associés
+        return $this->render('vote/new.html.twig', [
+            'sondage' => $sondage,
+            'users' => $users,
+            'choices' => $sondage->getChoix(), // Les choix associés au sondage
+        ]);
+    }
+
 
 }

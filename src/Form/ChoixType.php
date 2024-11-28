@@ -15,7 +15,12 @@ class ChoixType extends AbstractType
     {
         $builder
             ->add('titre')
-            ->add('imageChoix')
+            ->add('imageChoixFile', FileType::class, [
+                'label' => 'Image du choix',
+                'mapped' => true,
+                'required' => false,
+
+            ])
             ->add('sondage', EntityType::class, [
                 'class' => Sondage::class,
                 'choice_label' => 'id',

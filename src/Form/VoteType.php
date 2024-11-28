@@ -24,6 +24,7 @@ class VoteType extends AbstractType
                 'class' => Utilisateur::class,
                 'choice_label' => 'id',
             ])
+
         ;
     }
 

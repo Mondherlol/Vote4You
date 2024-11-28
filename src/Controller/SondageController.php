@@ -76,16 +76,24 @@ final class SondageController extends AbstractController
 
             // Ajouter les choix associés
             $choixData = $request->request->all('choix');
+            $choixFiles = $request->files->all('choix');  // Récupère les fichiers
 
-            foreach ($choixData as $choixItem) {
+
+            foreach ($choixData as $index => $choixItem) {
                 if (!empty($choixItem['titreChoix'])) { // Vérifie que le titre est rempli
                     $choix = new Choix();
                     $choix->setTitre($choixItem['titreChoix']);
-                    if (!empty($choixItem['imageChoixFile'])) {
-                        $imageFile = $form->get('imageChoixFile')->getData();
+                    // Vérifie si un fichier a été téléchargé pour ce choix
+                    if (!empty($choixFiles[$index]['imageChoixFile'])) {
+                        $imageFile = $choixFiles[$index]['imageChoixFile'];
 
-                        $choix->setImageChoix($imageFile);
+                        if ($imageFile && $imageFile->isValid()) {
+                            $newFilename = uniqid().'.'.$imageFile->guessExtension();
+                            $imageFile->move($this->getParameter('uploader.choix_image'), $newFilename);
+                            $choix->setImageChoix($newFilename);
+                        }
                     }
+
                     $choix->setSondage($sondage);
 
                     $sondage->addChoix($choix);

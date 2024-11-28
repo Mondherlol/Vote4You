@@ -123,5 +123,13 @@ class Choix
         return $this;
     }
 
+    // Méthode pour obtenir l'URL de l'image
+    public function getImageUrl(): ?string
+    {
+        if ($this->imageChoix) {
+            return '/uploads/choix/' . $this->imageChoix->getFilename();
+        }
+        return null;
+    }
 
 }

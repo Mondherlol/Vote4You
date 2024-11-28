@@ -3,25 +3,73 @@
 {% block title %}Vote pour {{ sondage.titre }}{% endblock %}
 
 {% block body %}
-    <h1>{{ sondage.titre }}</h1>
-    <p>{{ sondage.description }}</p>
+    <link rel="stylesheet" href="{{ asset('css/vote.css') }}">
 
-    <form method="POST" action="{{ path('submit_vote', { id: sondage.id }) }}">
-        <h3>Choisissez vos options :</h3>
-        {% for choice in choices %}
-            <div>
-                <input type="checkbox" name="choices[]" value="{{ choice.id }}" id="choice_{{ choice.id }}">
-                <label for="choice_{{ choice.id }}">{{ choice.titre }}</label>
+    <div class="container-vote">
+    <h1 class="main-title">{{ sondage.titre }}</h1>
+    <p class="description">{{ sondage.description }}</p>
+
+    <div class="vote-container">
+        <div class="swiper-container">
+            <div class="swiper-wrapper">
+                {% for choice in choices %}
+                    <div class="swiper-slide card" data-choice-id="{{ choice.id }}">
+                            <img src="{{ asset('uploads/choix/' ~ choice.imageChoix) }}" alt="{{ choice.titre }}" class="choice-image">
+                            <h3>{{ choice.titre }}</h3>
+                        </div>
+
+                {% endfor %}
             </div>
-        {% endfor %}
+        </div>
+        <form method="POST" action="{{ path('submit_vote', { id: sondage.id }) }}" id="vote-form">
+            <input type="hidden" name="choices" id="selected-choices" value="">
+            <button type="submit" class="submit-button" id="submit-button" style="display: none;">Valider le vote</button>
+        </form>
+    </div>
 
-        <h3>Choisissez un utilisateur</h3>
-        <select name="user_id" required>
-            {% for user in users %}
-                <option value="{{ user.id }}">{{ user.pseudo }}</option>
-            {% endfor %}
-        </select>
+    <script>
 
-        <button type="submit">Voter</button>
-    </form>
+        document.addEventListener('DOMContentLoaded', function () {
+            const swiper = new Swiper('.swiper-container', {
+                effect: 'cards',
+                grabCursor: true,
+                cardsEffect: {
+                    slideShadows: true,
+                },
+                allowTouchMove: true,
+                on: {
+                    slideChangeTransitionEnd: checkLastSlide,
+                    slideNextTransitionStart: () => handleSwipe(true),
+                    slidePrevTransitionStart: () => handleSwipe(false)
+                }
+            });
+
+            const choices = {}; // Objet pour stocker les choix (OUI/NON)
+
+            function handleSwipe(isYes) {
+                const activeSlide = swiper.slides[swiper.activeIndex];
+                const choiceId = activeSlide.dataset.choiceId;
+
+                // Enregistrer le choix : true = OUI, false = NON
+                choices[choiceId] = isYes;
+
+                // Retirer la carte après le swipe
+                swiper.removeSlide(swiper.activeIndex);
+
+                // Vérifier s'il reste des cartes
+                checkLastSlide();
+            }
+
+            function checkLastSlide() {
+                if (swiper.slides.length === 0) {
+                    // Toutes les cartes ont été swipées
+                    document.getElementById('submit-button').style.display = 'block';
+                    document.getElementById('selected-choices').value = JSON.stringify(choices);
+                }
+            }
+        });
+
+    </script>
+
+    </div>
 {% endblock %}
