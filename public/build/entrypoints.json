@@ -1,0 +1,9 @@
+{
+  "entrypoints": {
+    "app": {
+      "js": [
+        "http://localhost:3000/build/runtime.js"
+      ]
+    }
+  }
+}

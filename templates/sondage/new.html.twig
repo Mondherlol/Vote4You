@@ -1,125 +1,312 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Sondage{% endblock %}
+{% block title %}Créer un nouveau sondage{% endblock %}
 
 {% block body %}
-    <h1>Ajouter un nouveau sondage</h1>
+    <link rel="stylesheet" href="{{ asset('css/newSondage.css') }}">
 
+    <div class="container sondage-form mt-5">
+        <h1 class=" text-center text-black title">Créer un nouveau sondage</h1>
+        <h2 class="mb-5 text-center text-black subtitle">Complétez le formulaire pour publier votre sondage</h2>
+        {{ form_start(form, { 'attr': { 'class': 'form-container' } }) }}
 
-    {{ form_start(form) }}
-
-    <!-- Titre -->
-    <div class="form-group">
-        {{ form_label(form.titre, 'Titre du sondage') }}
-        {{ form_widget(form.titre, { 'attr': { 'class': 'form-control' } }) }}
-        {{ form_errors(form.titre) }}
-    </div>
-
-    <!-- Description -->
-    <div class="form-group">
-        {{ form_label(form.description, 'Description') }}
-        {{ form_widget(form.description, { 'attr': { 'class': 'form-control' } }) }}
-        {{ form_errors(form.description) }}
-    </div>
-
-    <!-- Sondage Public -->
-    <div class="form-group">
-        {{ form_label(form.publique, 'Sondage publique ?') }}
-        {{ form_widget(form.publique) }}
-        {{ form_errors(form.publique) }}
-    </div>
-
-    <!-- Date d'expiration -->
-    <div class="form-group">
-        {{ form_label(form.date_fin, 'Date d’expiration') }}
-        {{ form_widget(form.date_fin, { 'attr': { 'class': 'form-control' } }) }}
-        {{ form_errors(form.date_fin) }}
-    </div>
-
-    <!-- Image -->
-    <div class="form-group">
-        {{ form_label(form.imageFile, 'Image du sondage') }}
-        {{ form_widget(form.imageFile, { 'attr': { 'class': 'form-control-file' } }) }}
-        {{ form_errors(form.imageFile) }}
-    </div>
-
-    <!-- Thèmes -->
-    <div class="form-group">
-        <label for="themes">Thèmes associés</label>
-        <div id="themes">
-            <input type="text" name="themes[]" class="form-control" placeholder="Nom du thème">
-            <button type="button" id="add-theme" class="btn btn-secondary mt-2">Ajouter un thème</button>
+        <!-- Titre -->
+        <div class="form-group">
+            {{ form_label(form.titre, 'Titre du sondage', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.titre, { 'attr': { 'class': 'form-control', 'placeholder': 'Entrez le titre du sondage' } }) }}
+            {{ form_errors(form.titre) }}
         </div>
-    </div>
 
 
-    <div class="form-group">
-        <label for="choices">Choix associés</label>
-        <div id="choices">
-            <!-- Premier choix -->
-            <div class="choice mt-2">
-                <!-- Titre du choix -->
-                <input type="text" name="choix[0][titreChoix]" class="form-control" placeholder="Titre du choix">
+        <!-- Description -->
+        <div class="form-group">
+            {{ form_label(form.description, 'Description (optionnel)', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.description, { 'attr': { 'class': 'form-control', 'placeholder': 'Quelques lignes pour décrire votre sondage' } }) }}
+            {{ form_errors(form.description) }}
+        </div>
 
-                <!-- Image du choix -->
-                <label for="choix[0][imageChoixFile]">Image du choix (facultatif)</label>
-                <input type="file" name="choix[0][imageChoixFile]" class="form-control-file mt-1">
+        <!-- Image du sondage -->
+        <div class="form-group">
+            <label for="image-upload" class="form-label">Image du sondage (optionnel)</label>
+            <div id="dropzone" class="dropzone position-relative text-center">
+                <div class="upload-content">
+                    <img src="{{ asset('css/bx-cloud-upload.svg') }}" alt="Upload" class="upload-icon">
+                    <p>Glissez-déposez une image ici ou <strong>cliquez ici</strong> pour en sélectionner une</p>
+                </div>
+                <img id="image-preview" src="#" alt="Aperçu de l'image" class="d-none img-fluid">
             </div>
         </div>
 
-        <!-- Bouton pour ajouter un nouveau choix -->
-        <button type="button" id="add-choice" class="btn btn-secondary mt-2">Ajouter un choix</button>
-    </div>
-    <button type="submit" class="btn btn-primary">Créer le sondage</button>
 
-    {{ form_end(form) }}
-    <a href="{{ path('app_sondage_index') }}">back to list</a>
+        <!-- Sondage Public -->
+        <div class="form-group d-flex align-items-center gap-3">
+            <div class="label-container">
+                {{ form_label(form.publique, 'Rendre privé  : ', {'label_attr': {'class': 'form-label  mb-0'}}) }}
+            </div>
+            <div class="form-check form-switch d-flex align-items-center gap-2">
+                {{ form_widget(form.publique, { 'attr': { 'class': 'form-check-input', 'style': 'transform: scale(1.5);' } }) }}
+            </div>
+        </div>
+
+
+        <!-- Date d'expiration -->
+        <div class="form-group">
+            {{ form_label(form.date_fin, 'Cloture du sondage (par défaut dans 24h)', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.date_fin, { 'attr': { 'class': 'form-control' } }) }}
+            {{ form_errors(form.date_fin) }}
+        </div>
+
+
+        <!-- Thèmes dynamiques avec autocomplétion -->
+        <div class="form-group">
+            <label for="theme-input" class="form-label">Thèmes associés (optionnel)</label>
+            <div class="input-group mb-3 position-relative">
+                <input type="text" id="theme-input" class="form-control" placeholder="Rechercher un thème">
+                <ul id="theme-dropdown" class="dropdown-menu w-100" style="display: none;"></ul>
+            </div>
+            <div id="theme-tags" class="d-flex flex-wrap gap-2"></div>
+        </div>
+
+
+        <!-- Choix dynamiques -->
+        <div id="choices" class="d-flex flex-wrap gap-4 mt-4">
+            <!-- LES CHOIX SONT INSERER ICI -->
+        </div>
+        <button type="button" id="add-choice" class="btn btn-primary mt-4">Ajouter un choix</button>
+
+
+        <!-- Bouton de soumission -->
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary btn-lg">Créer le sondage</button>
+        </div>
+        {{ form_end(form) }}
+
+        <div class="text-center mt-3">
+            <a href="{{ path('app_sondage_index') }}" class="btn btn-link text-light">Retour à la liste</a>
+        </div>
+    </div>
+
 
     <script>
-        // Ajouter un thème
-        document.getElementById('add-theme').addEventListener('click', function () {
-            const container = document.getElementById('themes');
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.name = 'themes[]';
-            input.classList.add('form-control', 'mt-2');
-            input.placeholder = 'Nom du thème';
-            container.insertBefore(input, this); // Insère avant le bouton "Ajouter un thème"
-        });
 
-        // Ajouter un choix
-        // Fonction pour ajouter un choix
-        let choiceIndex = 1; // Gère les index des choix dynamiques
+        // Choix
 
-        document.getElementById('add-choice').addEventListener('click', function () {
-            const container = document.getElementById('choices');
+        const container = document.getElementById('choices');
+        let choiceIndex = 0;
 
-            // Créer une nouvelle div pour un choix
+        // Ajout d'un choix
+        function addChoice() {
             const choiceDiv = document.createElement('div');
-            choiceDiv.classList.add('choice', 'mt-2');
+            choiceDiv.classList.add('card', 'choice');
 
-            // Titre du choix
-            const inputTitle = document.createElement('input');
-            inputTitle.type = 'text';
-            inputTitle.name = 'choix[${choiceIndex}][titreChoix]';
-            inputTitle.classList.add('form-control');
-            inputTitle.placeholder = 'Titre du choix';
+            choiceDiv.innerHTML = `
+        <div class="remove-choice">
+            <button class="btn btn-danger btn-sm remove-btn">&times;</button>
+        </div>
+        <div class="card-body d-flex flex-column align-items-center">
+            <div class="image-placeholder d-flex justify-content-center align-items-center">
+                <button class="btn btn-outline-primary upload-btn">Ajouter une image</button>
+                <input type="file" name="choix[${choiceIndex}][imageChoixFile]" class="form-control-file d-none image-input">
+            </div>
+            <input type="text" name="choix[${choiceIndex}][titreChoix]" class="form-control mt-3" placeholder="Titre du choix">
+        </div>
+    `;
 
-            // Image du choix
-            const inputImage = document.createElement('input');
-            inputImage.type = 'file';
-            inputImage.name = 'choix[${choiceIndex}][imageChoixFile]';
-            inputImage.classList.add('form-control-file', 'mt-1');
-
-            // Ajouter les champs dans la div
-            choiceDiv.appendChild(inputTitle);
-            choiceDiv.appendChild(inputImage);
-
-            // Ajouter la nouvelle div au conteneur
             container.appendChild(choiceDiv);
-            // Incrémenter l'index des choix
-            choiceIndex++;
-        });
-    </script>
 
+            // Gestion de l'upload d'image pour la nouvelle carte
+            const uploadBtn = choiceDiv.querySelector('.upload-btn');
+            const imageInput = choiceDiv.querySelector('.image-input');
+
+            uploadBtn.addEventListener('click', () => imageInput.click());
+
+            imageInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        const img = document.createElement('img');
+                        img.src = reader.result;
+                        img.classList.add('img-fluid');
+                        const placeholder = uploadBtn.parentNode;
+                        placeholder.innerHTML = ''; // Supprimer le bouton
+                        placeholder.appendChild(img); // Ajouter l'image
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            choiceIndex++;
+        }
+
+        // Ajout de 2 choix par défaut
+        addChoice();
+        addChoice();
+
+        // Suppression d'un choix avec vérification du nombre minimum
+        container.addEventListener('click', (event) => {
+            if (event.target.classList.contains('remove-btn')) {
+                if (choiceIndex > 2) {
+                    const card = event.target.closest('.choice');
+                    container.removeChild(card);
+                    choiceIndex--;
+                } else {
+                    alert("Vous devez avoir au moins 2 choix");
+                }
+            }
+        });
+
+
+        // Ajout d'un choix au clic sur le bouton principal
+        document.getElementById('add-choice').addEventListener('click', addChoice);
+
+
+
+        // Images
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const dropzone = document.getElementById('dropzone');
+            const fileInput = document.getElementById('sondage_imageFile');
+            const imagePreview = document.getElementById('image-preview');
+
+            dropzone.addEventListener('click', () => {
+                fileInput.click();
+            });
+
+            dropzone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                handleFile(e.dataTransfer.files[0]);
+            });
+
+            fileInput.addEventListener('change', () => {
+                handleFile(fileInput.files[0]);
+            });
+
+            function handleFile(file) {
+                if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        imagePreview.src = e.target.result;
+                        imagePreview.classList.remove('d-none');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+        });
+
+
+
+        // Thèmes
+        document.addEventListener("DOMContentLoaded", () => {
+            const themeInput = document.getElementById("theme-input");
+            const themeDropdown = document.getElementById("theme-dropdown");
+            const themeTagsContainer = document.getElementById("theme-tags");
+
+            // Liste des thèmes disponibles
+            const availableThemes = ["Technologie", "Éducation", "Environnement", "Santé", "Politique", "Sport", "Culture", "Art"];
+            let themes = []; // Thèmes sélectionnés
+
+            // Filtrer les thèmes disponibles en fonction de l'entrée
+            themeInput.addEventListener("input", () => {
+                const query = themeInput.value.toLowerCase().trim();
+                const filteredThemes = availableThemes.filter(
+                    (theme) => theme.toLowerCase().includes(query) && !themes.includes(theme)
+                );
+
+                renderDropdown(filteredThemes);
+            });
+
+            // Ajouter un thème lorsqu'on appuie sur "Entrée"
+            themeInput.addEventListener("keydown", (e) => {
+                if (e.key === "Enter" && themeDropdown.firstChild) {
+                    e.preventDefault();
+                    const selectedTheme = themeDropdown.firstChild.textContent;
+                    addTheme(selectedTheme);
+                    clearDropdown();
+                }
+            });
+
+            // Ajouter un thème lors d'un clic sur le dropdown
+            themeDropdown.addEventListener("click", (e) => {
+                if (e.target.tagName === "LI") {
+                    addTheme(e.target.textContent);
+                    clearDropdown();
+                }
+            });
+
+            // Fonction pour afficher les thèmes dans le dropdown
+            function renderDropdown(themes) {
+                themeDropdown.innerHTML = "";
+                if (themes.length > 0) {
+                    themeDropdown.style.display = "block";
+                    themes.forEach((theme) => {
+                        const item = document.createElement("li");
+                        item.className = "dropdown-item";
+                        item.textContent = theme;
+                        themeDropdown.appendChild(item);
+                    });
+                } else {
+                    themeDropdown.style.display = "none";
+                }
+            }
+
+            // Ajouter un thème à la liste des tags
+            function addTheme(theme) {
+                if (!themes.includes(theme)) {
+                    themes.push(theme);
+                    renderTags();
+                    themeInput.value = ""; // Réinitialise l'input
+                }
+            }
+
+            // Afficher les tags
+            function renderTags() {
+                themeTagsContainer.innerHTML = "";
+                themes.forEach((theme, index) => {
+                    const tag = document.createElement("div");
+                    tag.className = "theme-tag badge bg-primary text-white d-flex align-items-center";
+                    tag.innerHTML = `
+                <span>${theme}</span>
+                <button type="button" class="btn-close btn-close-white ms-2" aria-label="Remove"></button>
+            `;
+                    themeTagsContainer.appendChild(tag);
+
+                    // Supprimer un thème
+                    tag.querySelector(".btn-close").addEventListener("click", () => {
+                        themes.splice(index, 1);
+                        renderTags();
+                    });
+                });
+            }
+
+            // Effacer le dropdown
+            function clearDropdown() {
+                themeDropdown.innerHTML = "";
+                themeDropdown.style.display = "none";
+            }
+
+            // Fermer le dropdown si on clique ailleurs
+            document.addEventListener("click", (e) => {
+                if (!themeInput.contains(e.target) && !themeDropdown.contains(e.target)) {
+                    clearDropdown();
+                }
+            });
+        });
+
+        // Date d'expiration
+        document.addEventListener('DOMContentLoaded', () => {
+            const dateInput = document.querySelector('input[name="{{ form.date_fin.vars.full_name }}"]');
+
+            // Définir la valeur par défaut à 24 heures à partir de maintenant
+            const now = new Date();
+            const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+            dateInput.value = tomorrow.toISOString().slice(0, 16); // Format YYYY-MM-DDTHH:mm
+
+            // Empêcher la sélection d'une date passée
+            const minDate = now.toISOString().slice(0, 16);
+            dateInput.min = minDate;
+        });
+
+    </script>
 {% endblock %}

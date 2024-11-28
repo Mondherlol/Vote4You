@@ -1,0 +1,5 @@
+{
+  "build/app.css": "http://localhost:3000/build/app.css",
+  "build/app.js": "http://localhost:3000/build/app.js",
+  "build/runtime.js": "http://localhost:3000/build/runtime.js"
+}

@@ -1,0 +1,290 @@
+body {
+    background-color: #2e8b57; /* Vert dynamique */
+    font-family: 'Roboto', sans-serif;
+    color: white;
+    margin: 0;
+    padding: 0;
+}
+.form-control{
+    background: rgba(255, 255, 255, 0.2);
+
+}
+
+.title{
+    font-family: 'Springwood', sans-serif;
+}
+.subtitle, label, strong {
+    font-family: 'Kap', sans-serif;
+}
+
+label{
+    font-size: 35px!important;
+
+}
+
+.sondage-form{
+    max-width: 800px;
+}
+
+.form-container {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    border-top : 4px solid #caff79;
+
+}
+
+
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.form-control {
+    border: 2px solid #6fcf97;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 1rem;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #34d399;
+    box-shadow: 0px 0px 5px rgba(52, 211, 153, 0.7);
+}
+
+.btn-primary {
+    background-color: #34d399;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 50px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #2db387;
+}
+
+.btn-outline-light {
+    border: 2px solid #fff;
+    color: #fff;
+    border-radius: 50px;
+}
+
+.btn-outline-light:hover {
+    background-color: #fff;
+    color: #2e8b57;
+}
+
+.text-light {
+    color: #fff;
+    text-decoration: none;
+}
+
+.text-light:hover {
+    text-decoration: underline;
+}
+
+.dropzone {
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+    background : linear-gradient(90deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.2) 100%);
+}
+
+.dropzone:hover {
+    background: linear-gradient(90deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.3) 100%);
+}
+
+#image-preview {
+    max-width: 100%;
+    max-height: 200px;
+    margin-top: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+.dropzone strong {
+    font-size: 20px;
+}
+
+.dropzone.d-none {
+    display: none;
+}
+
+.form-check-input:checked{
+    background-color: #28ff5a;
+    border-color: #28ff5a;
+}
+#theme-dropdown {
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    border-top-right-radius: 0px;
+    border-top-left-radius: 0px;
+    margin-top: 48px;
+}
+
+.dropdown-item {
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+}
+
+.theme-tag {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.theme-tag .btn-close {
+    font-size: 0.8rem;
+    width: 1rem;
+    height: 1rem;
+}
+
+
+/* Style pour l'icône SVG */
+.upload-icon {
+    width: 60px;
+    height: 60px;
+    fill: #007bff;
+    opacity: 0.8;
+    transition: opacity 0.2s ease, transform 0.3s ease;
+}
+
+/* Container des cards */
+#choices {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+/* Card styling */
+.card {
+    width: 250px;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+}
+
+.card-body {
+    padding: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Placeholder pour image */
+.image-placeholder {
+    width: 100%;
+    height: 150px;
+    background-color: #f7f7f7;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.image-placeholder img {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.upload-btn {
+    border: 2px dashed #007bff;
+    background: none;
+    color: #007bff;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.upload-btn:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Inputs */
+.form-control {
+    border-radius: 6px;
+}
+
+/* Bouton pour ajouter une carte */
+#add-choice {
+    display: block;
+    margin: 0 auto;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 6px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+}
+
+/* Bouton pour supprimer un choix */
+.remove-choice {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+}
+
+.remove-btn {
+    font-size: 14px;
+    line-height: 14px;
+    padding: 4px 8px;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.remove-btn:hover {
+    background-color: #dc3545;
+    transform: scale(1.1);
+    color: white;
+}
+
+/* Ajuster le container pour inclure le bouton */
+.card {
+    position: relative;
+    padding-top: 20px;
+}
+
+.card input {
+    background: rgba(52, 211, 153, 0.15);
+}
+
+label[for="sondage_imageFile"] ,#sondage_imageFile {
+    display: none;
+}
+
+
