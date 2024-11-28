@@ -1,11 +1,27 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Vote{% endblock %}
+{% block title %}Vote pour {{ sondage.titre }}{% endblock %}
 
 {% block body %}
-    <h1>Create new Vote</h1>
+    <h1>{{ sondage.titre }}</h1>
+    <p>{{ sondage.description }}</p>
 
-    {{ include('vote/_form.html.twig') }}
+    <form method="POST" action="{{ path('submit_vote', { id: sondage.id }) }}">
+        <h3>Choisissez vos options :</h3>
+        {% for choice in choices %}
+            <div>
+                <input type="checkbox" name="choices[]" value="{{ choice.id }}" id="choice_{{ choice.id }}">
+                <label for="choice_{{ choice.id }}">{{ choice.titre }}</label>
+            </div>
+        {% endfor %}
 
-    <a href="{{ path('app_vote_index') }}">back to list</a>
+        <h3>Choisissez un utilisateur</h3>
+        <select name="user_id" required>
+            {% for user in users %}
+                <option value="{{ user.id }}">{{ user.pseudo }}</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">Voter</button>
+    </form>
 {% endblock %}

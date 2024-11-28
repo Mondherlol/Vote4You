@@ -10,7 +10,7 @@
             <tr>
                 <th>Id</th>
                 <th>CreatedAt</th>
-                <th>Adresse_ip</th>
+                <th>Choix</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -19,7 +19,7 @@
             <tr>
                 <td>{{ vote.id }}</td>
                 <td>{{ vote.createdAt ? vote.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ vote.adresseIp }}</td>
+                <td>{{ vote.idChoix.titre }}</td>
                 <td>
                     <a href="{{ path('app_vote_show', {'id': vote.id}) }}">show</a>
                     <a href="{{ path('app_vote_edit', {'id': vote.id}) }}">edit</a>

@@ -15,10 +15,7 @@ class VoteType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('createdAt', null, [
-                'widget' => 'single_text',
-            ])
-            ->add('adresse_ip')
+
             ->add('idChoix', EntityType::class, [
                 'class' => Choix::class,
                 'choice_label' => 'id',

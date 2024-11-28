@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Sondage;
 use App\Repository\SondageRepository;
 use App\Repository\ThemeRepository;
+use App\Repository\UtilisateurRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,6 +30,7 @@ class HomeController extends AbstractController
         $formattedSurveys = [];
         foreach ($surveys as $survey) {
             $formattedSurveys[] = [
+                'id'=>$survey->getId(),
                 'title' => $survey->getTitre(),
                 'description' => $survey->getDescription(),
                 'tags' => $survey->getThemes()->map(fn($tag) => $tag->getLibelle())->toArray(),
@@ -61,6 +63,7 @@ class HomeController extends AbstractController
         $formattedSurveys = [];
         foreach ($surveys as $survey) {
             $formattedSurveys[] = [
+                'id'=>$survey->getId(),
                 'title' => $survey->getTitre(),
                 'description' => $survey->getDescription(),
                 'tags' => $survey->getThemes()->map(fn($tag) => $tag->getLibelle())->toArray(),
@@ -102,6 +105,7 @@ class HomeController extends AbstractController
         $formattedSurveys = [];
         foreach ($surveys as $survey) {
             $formattedSurveys[] = [
+                'id'=>$survey->getId(),
                 'title' => $survey->getTitre(),
                 'description' => $survey->getDescription(),
                 'tags' => $survey->getThemes()->map(fn($tag) => $tag->getLibelle())->toArray(),
@@ -133,4 +137,24 @@ class HomeController extends AbstractController
         $interval = $now->diff($createdAt);
         return $interval->format('%d jours %h heures %i minutes'); // Exemple de format
     }
+
+    #[Route('/voter/{id}', name: 'vote')]
+    public function vote(int $id, SondageRepository $sondageRepository, UtilisateurRepository $userRepository): Response
+    {
+        $users = $userRepository->findAll();
+
+        // Récupérer le sondage par son ID
+        $sondage = $sondageRepository->find($id);
+        if (!$sondage) {
+            throw $this->createNotFoundException('Sondage introuvable.');
+        }
+
+        // Rendre la vue avec les détails du sondage et les choix associés
+        return $this->render('vote/new.html.twig', [
+            'sondage' => $sondage,
+            'users' => $users,
+            'choices' => $sondage->getChoix(), // Les choix associés au sondage
+        ]);
+    }
+
 }
