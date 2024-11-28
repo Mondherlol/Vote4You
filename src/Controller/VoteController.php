@@ -2,8 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Choix;
+use App\Entity\Utilisateur;
 use App\Entity\Vote;
 use App\Form\VoteType;
+use App\Repository\SondageRepository;
 use App\Repository\VoteRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -30,6 +33,7 @@ final class VoteController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $vote->setCreatedAt(new \DateTimeImmutable());
             $entityManager->persist($vote);
             $entityManager->flush();
 
@@ -78,4 +82,44 @@ final class VoteController extends AbstractController
 
         return $this->redirectToRoute('app_vote_index', [], Response::HTTP_SEE_OTHER);
     }
+    #[Route('/submit-vote/{id}', name: 'submit_vote', methods: ['POST'])]
+    public function submitVote(int $id, Request $request, SondageRepository $sondageRepository, EntityManagerInterface $entityManager): Response {
+        // Récupérer le sondage
+        $sondage = $sondageRepository->find($id);
+        if (!$sondage) {
+            throw $this->createNotFoundException('Sondage introuvable.');
+        }
+
+        $userId = $request->request->get('user_id');
+        $user = $entityManager->getRepository(Utilisateur::class)->find($userId);
+
+        // Récupérer les choix sélectionnés
+        $selectedChoices = $request->request->all('choices');
+        if (empty($selectedChoices)) {
+            $this->addFlash('error', 'Veuillez sélectionner au moins un choix.');
+            return $this->redirectToRoute('vote', ['id' => $id]);
+        }
+
+        // Enregistrer chaque vote dans la base de données
+        foreach ($selectedChoices as $choiceId) {
+            $choice = $entityManager->getRepository(Choix::class)->find($choiceId);
+            if (!$choice) {
+                continue;
+            }
+
+            $vote = new Vote();
+            $vote->setCreatedAt(new \DateTimeImmutable());
+            $vote->setAdresseIp($request->getClientIp()); // Récupérer l'adresse IP de l'utilisateur
+            $vote->setIdChoix($choice);
+            $vote->setIdUser($user); // Associe un utilisateur si nécessaire
+
+            $entityManager->persist($vote);
+        }
+
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Votre vote a été enregistré avec succès.');
+        return $this->redirectToRoute('home');
+    }
+
 }
