@@ -41,7 +41,15 @@ class SondageType extends AbstractType
                 'mapped' => true,
                 'required' => false,
 
+            ])
+            ->add('themes', EntityType::class, [
+                'class' => Theme::class,
+                'choice_label' => 'libelle',
+                'multiple' => true, // Permet la sélection multiple
+                'expanded' => true, // Utilise des cases à cocher pour la sélection
+                'label' => 'Thèmes disponibles',
             ]);
+
 
 
 

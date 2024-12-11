@@ -15,6 +15,15 @@ class ThemeRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Theme::class);
     }
+    public function findThemesWithSondageCount(): array
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->select('t AS theme', 'COUNT(s.id) AS sondageCount')
+            ->leftJoin('t.sondages', 's') // Assurez-vous que 'sondages' est le nom de la relation dans l'entité Theme
+            ->groupBy('t.id');
+
+        return $qb->getQuery()->getResult();
+    }
 
     //    /**
     //     * @return Theme[] Returns an array of Theme objects

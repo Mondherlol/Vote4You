@@ -1,9 +1,21 @@
-{% extends 'base.html.twig' %}
+{% extends '/admin/index.html.twig' %}
 
 {% block title %}Edit Sondage{% endblock %}
 
 {% block body %}
-<h1>Modifier le sondage</h1>
+    {% block spinner %}
+        {{ parent() }}
+    {% endblock %}
+
+    {% block sidebar %}
+        {{ parent() }}
+    {% endblock %}
+      {% block content %}
+          <div class="content">
+          {% block navbar %}
+              {{ parent() }}
+          {% endblock %}
+          <h1>Modifier le sondage</h1>
 
 {{ form_start(form) }}
 
@@ -124,5 +136,7 @@
         container.insertBefore(choiceDiv, this); // Insère avant le bouton "Ajouter un choix"
     });
 </script>
+          </div>
 
+      {% endblock %}
 {% endblock %}

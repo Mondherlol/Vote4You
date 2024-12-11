@@ -1,8 +1,20 @@
-{% extends 'base.html.twig' %}
+{% extends '/admin/index.html.twig' %}
 
 {% block title %}Signalement index{% endblock %}
 
 {% block body %}
+    {% block spinner %}
+        {{ parent() }}
+    {% endblock %}
+
+    {% block sidebar %}
+        {{ parent() }}
+    {% endblock %}
+      {% block content %}
+<div class="content">
+    {% block navbar %}
+        {{ parent() }}
+    {% endblock %}
     <h1>Signalement index</h1>
 
     <table class="table">
@@ -32,4 +44,7 @@
     </table>
 
     <a href="{{ path('app_signalement_new') }}">Create new</a>
+</div>
+
+      {% endblock %}
 {% endblock %}

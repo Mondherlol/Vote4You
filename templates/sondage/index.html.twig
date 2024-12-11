@@ -1,8 +1,20 @@
-{% extends 'base.html.twig' %}
+{% extends '/admin/index.html.twig' %}
 
 {% block title %}Sondage index{% endblock %}
 
 {% block body %}
+    {% block spinner %}
+        {{ parent() }}
+    {% endblock %}
+
+    {% block sidebar %}
+        {{ parent() }}
+    {% endblock %}
+      {% block content %}
+<div class="content">
+    {% block navbar %}
+        {{ parent() }}
+    {% endblock %}
     <h1>Sondage index</h1>
 
     <table class="table">
@@ -11,27 +23,29 @@
                 <th>Id</th>
                 <th>Titre</th>
                 <th>Description</th>
-                <th>Image</th>
                 <th>Publique</th>
-                <th>Date_fin</th>
                 <th>CreatedAt</th>
-                <th>actions</th>
+                <th>Date_fin</th>
+                <th>Nombre de votes</th>
+
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-        {% for sondage in sondages %}
+        {% for sondageData in sondages %}
             <tr>
-                <td>{{ sondage.id }}</td>
-                <td>{{ sondage.titre }}</td>
-                <td>{{ sondage.description }}</td>
-                <td>{{ sondage.image }}</td>
-                <td>{{ sondage.publique ? 'Yes' : 'No' }}</td>
-                <td>{{ sondage.dateFin ? sondage.dateFin|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ sondage.createdAt ? sondage.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+
+                <td>{{ sondageData.sondage.id }}</td>
+                <td>{{ sondageData.sondage.titre }}</td>
+                <td>{{ sondageData.sondage.description }}</td>
+                <td>{{ sondageData.sondage.publique ? 'Yes' : 'No' }}</td>
+                <td>{{ sondageData.sondage.createdAt ? sondageData.sondage.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ sondageData.sondage.dateFin ? sondageData.sondage.dateFin|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ sondageData.sondage.voteCount ?? 0 }}</td> {# Affiche le total des votes ou 0 si aucun #}
+
                 <td>
-                    <a href="{{ path('app_sondage_show', {'id': sondage.id}) }}">show</a>
-                    <a href="{{ path('app_sondage_edit', {'id': sondage.id}) }}">edit</a>
-                    <a href="{{ path('app_sondage_delete', {'id': sondage.id}) }}">delete</a>
+                    <a class="btn btn-sm btn-primary" href="{{ path('app_sondage_show', {'id': sondageData.sondage.id}) }}">show</a>
+                    <a class="btn btn-sm btn-primary" href="{{ path('app_sondage_delete', {'id': sondageData.sondage.id}) }}">delete</a>
 
                 </td>
             </tr>
@@ -43,5 +57,7 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_sondage_new') }}">Create new</a>
+</div>
+
+      {% endblock %}
 {% endblock %}

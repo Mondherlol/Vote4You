@@ -1,26 +1,49 @@
-{% extends 'base.html.twig' %}
+{% extends '/admin/index.html.twig' %}
 
-{% block title %}Theme index{% endblock %}
+{% block title %}
+    Theme index
+
+{% endblock %}
 
 {% block body %}
+    {% block spinner %}
+        {{ parent() }}
+    {% endblock %}
+
+    {% block sidebar %}
+        {{ parent() }}
+    {% endblock %}
+      {% block content %}
+<div class="content">
+    {% block navbar %}
+        {{ parent() }}
+    {% endblock %}
     <h1>Theme index</h1>
+    <a class="btn btn-sm btn-primary" href="{{ path('app_theme_new') }}">Create new</a>
+
 
     <table class="table">
         <thead>
             <tr>
                 <th>Id</th>
                 <th>Libelle</th>
-                <th>actions</th>
+                <th>Nombre de sondages</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-        {% for theme in themes %}
+        {% for themeData in themes %}
             <tr>
-                <td>{{ theme.id }}</td>
-                <td>{{ theme.libelle }}</td>
+                <td>{{ themeData.theme.id }}</td>
+                <td>{{ themeData.theme.libelle }}</td>
+                <td>{{ themeData.sondageCount }}</td> {# Nombre de sondages associés #}
+
                 <td>
-                    <a href="{{ path('app_theme_show', {'id': theme.id}) }}">show</a>
-                    <a href="{{ path('app_theme_edit', {'id': theme.id}) }}">edit</a>
+                    <a class="btn btn-sm btn-primary" href="{{ path('app_theme_show', {'id': themeData.theme.id}) }}">Show</a>
+                    <a class="btn btn-sm btn-primary"  href="{{ path('app_theme_edit', {'id': themeData.theme.id}) }}">Edit</a>
+                    <a class="btn btn-sm btn-primary" href="{{ path('app_theme_delete', {'id': themeData.theme.id}) }}">Delete</a>
+
+
                 </td>
             </tr>
         {% else %}
@@ -31,5 +54,7 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_theme_new') }}">Create new</a>
+</div>
+
+      {% endblock %}
 {% endblock %}

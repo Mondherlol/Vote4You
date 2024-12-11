@@ -21,8 +21,10 @@ final class SondageController extends AbstractController
     #[Route(name: 'app_sondage_index', methods: ['GET'])]
     public function index(SondageRepository $sondageRepository): Response
     {
+        $sondages = $sondageRepository->findSondagesWithVoteCount();
+
         return $this->render('sondage/index.html.twig', [
-            'sondages' => $sondageRepository->findAll(),
+            'sondages' => $sondages,
         ]);
     }
 
@@ -36,7 +38,11 @@ final class SondageController extends AbstractController
             $this->addFlash('error', 'Vous devez être connecté pour ajouter un sondage.');
             return $this->redirectToRoute('app_utilisateur_login'); // Remplacez 'app_utilisateur_login' par le nom de votre route de connexion
         }*/
-
+        // Récupérer les tags dynamiquement et formater en tableau associatif
+        $themes = array_map(fn($theme) => [
+            'id' => $theme->getId(),
+            'libelle' => $theme->getLibelle()
+        ], $themeRepository->findAll());
         $sondage = new Sondage();
         $form = $this->createForm(SondageType::class, $sondage);
         $form->handleRequest($request);
@@ -45,34 +51,25 @@ final class SondageController extends AbstractController
             // Définir la date de création
             $sondage->setCreatedAt(new \DateTimeImmutable());
 
-            // Sauvegarder le sondage dans la base de données pour générer un ID
-            $entityManager->persist($sondage);
-            $entityManager->flush();
-           // $uploaderHelper->asset($sondage, 'image')->store('uploads/images');
+            // Récupérer les IDs des thèmes sélectionnés
+            $themeIds = $request->request->all('themes') ?: [];
+            if (!is_array($themeIds)) {
+                $themeIds = [];
+            }
+            // Charger les thèmes correspondants
+            $themes = $themeRepository->findBy(['id' => $themeIds]);
 
-            // Récupère les données des thèmes depuis la requête (assurez-vous que le champ envoie un tableau de données)
-            $themesData = $request->request->all('themes'); // Utilise 'all' pour récupérer les données de type tableau
-
-            if (is_array($themesData)) {
-                foreach ($themesData as $themeLibelle) {
-                    // Vérifiez si le libellé du thème est non vide
-                    if (!empty($themeLibelle)) {
-                        // Vérifiez si le thème existe déjà dans la base de données
-                        $theme = $themeRepository->findOneBy(['libelle' => $themeLibelle]);
-
-                        // Si le thème n'existe pas, créez un nouveau thème
-                        if (!$theme) {
-                            $theme = new Theme();
-                            $theme->setLibelle($themeLibelle);
-                            $entityManager->persist($theme); // Persiste le nouveau thème
-                        }
-
-                        // Ajoutez le thème au sondage
-                        $sondage->addTheme($theme);
-                    }
-                }
+            if (count($themes) !== count($themeIds)) {
+                $this->addFlash('error', 'Un ou plusieurs thèmes sélectionnés sont invalides.');
+                return $this->redirectToRoute('app_sondage_new');
             }
 
+            // Associer les thèmes au sondage
+            foreach ($themes as $theme) {
+                $sondage->addTheme($theme);
+            }
+
+           // $uploaderHelper->asset($sondage, 'image')->store('uploads/images');
 
             // Ajouter les choix associés
             $choixData = $request->request->all('choix');
@@ -95,12 +92,12 @@ final class SondageController extends AbstractController
                     }
 
                     $choix->setSondage($sondage);
-
                     $sondage->addChoix($choix);
                     $entityManager->persist($choix);
                 }
             }
-            // Sauvegarder les relations (sondage et ses thèmes) et finaliser les opérations
+            // Sauvegarder le sondage dans la base de données pour générer un ID
+            $entityManager->persist($sondage);
             $entityManager->flush();
 
             // Ajouter un message de confirmation
@@ -115,6 +112,7 @@ final class SondageController extends AbstractController
         return $this->render('sondage/new.html.twig', [
             'sondage' => $sondage,
             'form' => $form->createView(),
+            'themes' => $themes,
         ]);
     }
 

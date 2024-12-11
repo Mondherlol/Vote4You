@@ -17,8 +17,10 @@ final class ThemeController extends AbstractController
     #[Route(name: 'app_theme_index', methods: ['GET'])]
     public function index(ThemeRepository $themeRepository): Response
     {
+        $themesWithSondageCount = $themeRepository->findThemesWithSondageCount();
+
         return $this->render('theme/index.html.twig', [
-            'themes' => $themeRepository->findAll(),
+            'themes' => $themesWithSondageCount,
         ]);
     }
 

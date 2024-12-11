@@ -50,4 +50,26 @@ class SondageRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findSondagesWithVoteCount(): array
+    {
+        $query = $this->createQueryBuilder('s')
+            ->select('s AS sondage', 'COUNT(v.id) AS voteCount') // Sélectionner les sondages, les votes
+            ->leftJoin('s.choix', 'c') // Relation entre Sondage et Choix
+            ->leftJoin('c.votes', 'v') // Relation entre Choix et Vote
+            ->groupBy('s.id') // Grouper par sondage
+            ->getQuery();
+
+        // Reformatage des résultats pour un accès plus simple
+        return array_map(function ($result) {
+            return [
+                'sondage' => $result['sondage'],
+                'voteCount' => (int) $result['voteCount'],
+            ];
+        }, $query->getResult());
+    }
+
+
+
+
+
 }
