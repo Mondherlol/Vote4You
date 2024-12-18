@@ -18,11 +18,8 @@ class Signalement
 
     #[ORM\ManyToOne(inversedBy: 'signalements')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Utilisateur $userSignaler = null;
+    private ?User $userSignaler = null;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Utilisateur $userSignaleur = null;
 
     public function getId(): ?int
     {
@@ -41,27 +38,17 @@ class Signalement
         return $this;
     }
 
-    public function getUserSignaler(): ?Utilisateur
+    public function getUserSignaler(): ?User
     {
         return $this->userSignaler;
     }
 
-    public function setUserSignaler(?Utilisateur $userSignaler): static
+    public function setUserSignaler(?User $userSignaler): static
     {
         $this->userSignaler = $userSignaler;
 
         return $this;
     }
 
-    public function getUserSignaleur(): ?Utilisateur
-    {
-        return $this->userSignaleur;
-    }
 
-    public function setUserSignaleur(?Utilisateur $userSignaleur): static
-    {
-        $this->userSignaleur = $userSignaleur;
-
-        return $this;
-    }
 }

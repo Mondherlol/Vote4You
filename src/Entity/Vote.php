@@ -25,7 +25,9 @@ class Vote
 
     #[ORM\ManyToOne(inversedBy: 'votes')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Utilisateur $idUser = null;
+    private ?User $user = null;
+
+
 
     public function getId(): ?int
     {
@@ -68,15 +70,17 @@ class Vote
         return $this;
     }
 
-    public function getIdUser(): ?Utilisateur
+    public function getUser(): ?User
     {
-        return $this->idUser;
+        return $this->user;
     }
 
-    public function setIdUser(?Utilisateur $idUser): static
+    public function setUser(?User $user): static
     {
-        $this->idUser = $idUser;
+        $this->user = $user;
 
         return $this;
     }
+
+
 }

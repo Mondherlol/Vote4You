@@ -40,9 +40,6 @@ class Sondage
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\ManyToOne(inversedBy: 'sondages')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Utilisateur $id_owner = null;
 
     /**
      * @var Collection<int, Theme>
@@ -61,6 +58,10 @@ class Sondage
      */
     #[ORM\OneToMany(targetEntity: Commentaire::class, mappedBy: 'idSondage')]
     private Collection $commentaires;
+
+    #[ORM\ManyToOne(inversedBy: 'Sondages')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $owner = null;
 
     public function __construct()
     {
@@ -157,17 +158,7 @@ class Sondage
         return $this;
     }
 
-    public function getIdOwner(): ?Utilisateur
-    {
-        return $this->id_owner;
-    }
 
-    public function setIdOwner(?Utilisateur $id_owner): static
-    {
-        $this->id_owner = $id_owner;
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, Theme>
@@ -271,5 +262,17 @@ class Sondage
             return '/uploads/sondages/' . $this->image->getFilename();
         }
         return null;
+    }
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): static
+    {
+        $this->owner = $owner;
+
+        return $this;
     }
 }

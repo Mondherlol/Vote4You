@@ -16,13 +16,15 @@ class Commentaire
     #[ORM\Column(length: 255)]
     private ?string $texte = null;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Utilisateur $idOwner = null;
+
 
     #[ORM\ManyToOne(inversedBy: 'commentaires')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Sondage $idSondage = null;
+
+    #[ORM\ManyToOne(inversedBy: 'commentaires')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $owner = null;
 
     public function getId(): ?int
     {
@@ -41,17 +43,7 @@ class Commentaire
         return $this;
     }
 
-    public function getIdOwner(): ?Utilisateur
-    {
-        return $this->idOwner;
-    }
 
-    public function setIdOwner(?Utilisateur $idOwner): static
-    {
-        $this->idOwner = $idOwner;
-
-        return $this;
-    }
 
     public function getIdSondage(): ?Sondage
     {
@@ -61,6 +53,18 @@ class Commentaire
     public function setIdSondage(?Sondage $idSondage): static
     {
         $this->idSondage = $idSondage;
+
+        return $this;
+    }
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): static
+    {
+        $this->owner = $owner;
 
         return $this;
     }

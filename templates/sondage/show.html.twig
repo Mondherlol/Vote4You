@@ -14,7 +14,8 @@
 <div class="content">
     {% block navbar %}
         {{ parent() }}
-    {% endblock %}    <h1>Sondage</h1>
+    {% endblock %}
+    <h1>Sondage</h1>
 
     <table class="table">
         <tbody>
@@ -48,6 +49,31 @@
             </tr>
         </tbody>
     </table>
+    <h2>Choix associés</h2>
+    <ul>
+        {% for choix in choix %}
+            <li>
+                <strong>{{ choix.titre }}</strong>
+                {% if choix.image %}
+                    <img src="{{ asset('uploads/choix/' ~ choix.image) }}" alt="{{ choix.titre }}" width="100">
+                {% endif %}
+                <p>Nombre de votes : {{ choix.votes }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+    <h2>Commentaire associés</h2>
+    <ul>
+        {% for com in commentaires %}
+         <li>
+             <strong>{{ com.username }}</strong>
+             <p>{{ com.texte }}</p>
+
+         </li>
+        {% endfor %}
+
+    </ul>
+
+
 
     <a href="{{ path('app_sondage_index') }}">back to list</a>
 

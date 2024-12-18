@@ -3,7 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Notification;
-use App\Entity\Utilisateur;
+use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -17,8 +17,8 @@ class NotificationType extends AbstractType
             ->add('titre')
             ->add('lien')
             ->add('lue')
-            ->add('idOwner', EntityType::class, [
-                'class' => Utilisateur::class,
+            ->add('owner', EntityType::class, [
+                'class' => User::class,
                 'choice_label' => 'id',
             ])
         ;

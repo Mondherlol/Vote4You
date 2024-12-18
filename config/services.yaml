@@ -8,6 +8,7 @@ parameters:
     uploader.choix_image: '%kernel.project_dir%/public/uploads/choix'
     namer: vich_uploader.namer_uniqid  # Optionnel : dépend de l'implémentation de VichUploaderBundle
 
+
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -25,33 +26,3 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
-# config/packages/security.yaml
-security:
-    # Encoders for the User entities
-    password_hashers:
-        App\Entity\Utilisateur:
-            algorithm: auto
-
-    # Where Symfony looks for authenticated users
-    firewalls:
-        # This is the part that handles the login process
-        main:
-            pattern: ^/
-            form_login:
-                login_path: app_utilisateur_login
-                check_path: app_utilisateur_login
-                default_target_path: app_sondage_list  # Page à rediriger après la connexion réussie
-                username_parameter: _username
-                password_parameter: _password
-            logout:
-                path: app_utilisateur_logout
-                # Optionally, you can specify a redirection after logout
-                target: app_utilisateur_login
-
-
-    # User provider settings
-    providers:
-        database:
-            entity:
-                class: App\Entity\Utilisateur
-                property: email

@@ -36,8 +36,8 @@ class HomeController extends AbstractController
                 'tags' => $survey->getThemes()->map(fn($tag) => $tag->getLibelle())->toArray(),
                 'image_url' => $survey->getImage(),
                 'user' => [
-                    'name' => $survey->getIdOwner()->getPseudo(),
-                    'profile_picture_url' => $survey->getIdOwner()->getProfilePic(),
+                    'name' => $survey->getOwner()->getUsername(),
+                    'profile_picture_url' => $survey->getOwner()->getProfilePic(),
                 ],
                 'time_remaining' => $this->calculateTimeRemaining($survey->getCreatedAt()), // Méthode pour calculer le temps restant
             ];
@@ -69,8 +69,8 @@ class HomeController extends AbstractController
                 'tags' => $survey->getThemes()->map(fn($tag) => $tag->getLibelle())->toArray(),
                 'image_url' => $survey->getImage(),
                 'user' => [
-                    'name' => $survey->getIdOwner()->getPseudo(),
-                    'profile_picture_url' => $survey->getIdOwner()->getProfilePic(),
+                    'name' => $survey->getOwner()->getUsername(),
+                    'profile_picture_url' => $survey->getOwner()->getProfilePic(),
                 ],
                 'time_remaining' => $this->calculateTimeRemaining($survey->getCreatedAt()), // Méthode pour calculer le temps restant
             ];
@@ -111,8 +111,8 @@ class HomeController extends AbstractController
                 'tags' => $survey->getThemes()->map(fn($tag) => $tag->getLibelle())->toArray(),
                 'image_url' => $survey->getImage(),
                 'user' => [
-                    'name' => $survey->getIdOwner()->getPseudo(),
-                    'profile_picture_url' => $survey->getIdOwner()->getProfilePic(),
+                    'name' => $survey->getOwner()->getUsername(),
+                    'profile_picture_url' => $survey->getOwner()->getProfilePic(),
                 ],
                 'time_remaining' => $this->calculateTimeRemaining($survey->getCreatedAt()), // Méthode pour calculer le temps restant
             ];

@@ -2,33 +2,34 @@
 
 namespace App\Form;
 
-use App\Entity\Choix;
-use App\Entity\Utilisateur;
-use App\Entity\Vote;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class VoteType extends AbstractType
+class UserType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-
-            ->add('idChoix', EntityType::class, [
-                'class' => Choix::class,
-                'choice_label' => 'id',
+            ->add('email')
+            ->add('roles')
+            ->add('password')
+            ->add('profilePic')
+            ->add('dateFinBan', null, [
+                'widget' => 'single_text',
             ])
-
-
+            ->add('createdAt', null, [
+                'widget' => 'single_text',
+            ])
+            ->add('username')
         ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Vote::class,
+            'data_class' => User::class,
         ]);
     }
 }

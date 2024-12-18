@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Sondage;
 use App\Entity\Theme;
+use App\Entity\User;
 use App\Entity\Utilisateur;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -26,10 +27,6 @@ class SondageType extends AbstractType
                 'widget' => 'single_text',
             ])
 
-            ->add('id_owner', EntityType::class, [
-                'class' => Utilisateur::class,
-                'choice_label' => 'id',
-            ])
 
             /*->add('imageChoixFile', FileType::class, [
                 'label' => 'Image du choix (facultatif)',
@@ -41,13 +38,6 @@ class SondageType extends AbstractType
                 'mapped' => true,
                 'required' => false,
 
-            ])
-            ->add('themes', EntityType::class, [
-                'class' => Theme::class,
-                'choice_label' => 'libelle',
-                'multiple' => true, // Permet la sélection multiple
-                'expanded' => true, // Utilise des cases à cocher pour la sélection
-                'label' => 'Thèmes disponibles',
             ]);
 
 

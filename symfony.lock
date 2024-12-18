@@ -46,7 +46,7 @@
             "repo": "github.com/symfony/recipes",
             "branch": "main",
             "version": "6.4",
-            "ref": "6c28c471640cc2c6e60812ebcb961c526ef8997f"
+            "ref": "5ad1308aa756d58f999ffbe1540d1189f5d7d14a"
         },
         "files": [
             "./assets/app.js",
@@ -84,11 +84,12 @@
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
-            "version": "1.0",
-            "ref": "146251ae39e06a95be0fe3d13c807bcf3938b172"
+            "version": "2.4",
+            "ref": "52e9754527a15e2b79d9a610f98185a1fe46622a"
         },
         "files": [
-            "./.env"
+            "./.env",
+            "./.env.dev"
         ]
     },
     "symfony/framework-bundle": {
@@ -168,7 +169,7 @@
         ]
     },
     "symfony/phpunit-bridge": {
-        "version": "7.1",
+        "version": "7.2",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
@@ -209,7 +210,7 @@
         ]
     },
     "symfony/stimulus-bundle": {
-        "version": "2.21",
+        "version": "2.22",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
@@ -249,7 +250,13 @@
         ]
     },
     "symfony/ux-turbo": {
-        "version": "v2.21.0"
+        "version": "2.22",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "2.19",
+            "ref": "9dd2778a116b6e5e01e5e1582d03d5a9e82630de"
+        }
     },
     "symfony/validator": {
         "version": "6.4",
@@ -276,19 +283,19 @@
             "./config/routes/web_profiler.yaml"
         ]
     },
+    "symfonycasts/verify-email-bundle": {
+        "version": "v1.17.3"
+    },
     "twig/extra-bundle": {
-        "version": "v3.13.0"
+        "version": "v3.17.0"
     },
     "vich/uploader-bundle": {
-        "version": "2.4",
+        "version": "2.5",
         "recipe": {
             "repo": "github.com/symfony/recipes-contrib",
             "branch": "main",
             "version": "1.13",
             "ref": "1b3064c2f6b255c2bc2f56461aaeb76b11e07e36"
-        },
-        "files": [
-            "./config/packages/vich_uploader.yaml"
-        ]
+        }
     }
 }

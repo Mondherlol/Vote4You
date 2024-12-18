@@ -15,14 +15,14 @@ class SignalementType extends AbstractType
     {
         $builder
             ->add('raison')
-            ->add('userSignaler', EntityType::class, [
+            /*->add('userSignaler', EntityType::class, [
                 'class' => Utilisateur::class,
                 'choice_label' => 'id',
             ])
             ->add('userSignaleur', EntityType::class, [
                 'class' => Utilisateur::class,
                 'choice_label' => 'id',
-            ])
+            ])*/
         ;
     }
 

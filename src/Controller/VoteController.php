@@ -3,11 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Choix;
-use App\Entity\Utilisateur;
+use App\Entity\User;
 use App\Entity\Vote;
 use App\Form\VoteType;
 use App\Repository\SondageRepository;
-use App\Repository\UtilisateurRepository;
+use App\Repository\UserRepository;
 use App\Repository\VoteRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -92,7 +92,7 @@ final class VoteController extends AbstractController
         }
 
         $userId = $request->request->get('user_id');
-        $user = $entityManager->getRepository(Utilisateur::class)->find($userId);
+        $user = $entityManager->getRepository(User::class)->find($userId);
 
         // Récupérer les choix sélectionnés
         $selectedChoices = $request->request->all('choices');
@@ -123,8 +123,8 @@ final class VoteController extends AbstractController
         return $this->redirectToRoute('home');
     }
 
-    #[\Symfony\Component\Routing\Annotation\Route('/voter/{id}', name: 'vote')]
-    public function vote(int $id, SondageRepository $sondageRepository, UtilisateurRepository $userRepository): Response
+    #[Route('/voter/{id}', name: 'vote')]
+    public function vote(int $id, SondageRepository $sondageRepository, UserRepository $userRepository): Response
     {
         $users = $userRepository->findAll();
 

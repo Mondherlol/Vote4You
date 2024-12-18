@@ -24,7 +24,8 @@ class Notification
 
     #[ORM\ManyToOne(inversedBy: 'notifications')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Utilisateur $idOwner = null;
+    private ?User $owner = null;
+
 
     public function getId(): ?int
     {
@@ -75,6 +76,18 @@ class Notification
     public function setIdOwner(?Utilisateur $idOwner): static
     {
         $this->idOwner = $idOwner;
+
+        return $this;
+    }
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): static
+    {
+        $this->owner = $owner;
 
         return $this;
     }
