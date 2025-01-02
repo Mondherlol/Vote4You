@@ -6,6 +6,7 @@
 parameters:
     uploader.sondage_image: '%kernel.project_dir%/public/uploads/sondages'
     uploader.choix_image: '%kernel.project_dir%/public/uploads/choix'
+    uploads_directory: '%kernel.project_dir%/public/uploads/images'
     namer: vich_uploader.namer_uniqid  # Optionnel : dépend de l'implémentation de VichUploaderBundle
 
 

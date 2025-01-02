@@ -44,8 +44,8 @@
                 <td>{{ sondageData.sondage.voteCount ?? 0 }}</td> {# Affiche le total des votes ou 0 si aucun #}
 
                 <td>
-                    <a class="btn btn-sm btn-primary" href="{{ path('app_sondage_show', {'id': sondageData.sondage.id}) }}">show</a>
-                    <a class="btn btn-sm btn-primary" href="{{ path('app_sondage_delete', {'id': sondageData.sondage.id}) }}">delete</a>
+                    <a class="btn btn-sm btn-primary" href="{{ path('app_sondage_show', {'id': sondageData.sondage.id}) }}">Show</a>
+                    <a class="btn btn-sm btn-danger" href="{{ path('app_sondage_delete', {'id': sondageData.sondage.id}) }}">Delete</a>
 
                 </td>
             </tr>

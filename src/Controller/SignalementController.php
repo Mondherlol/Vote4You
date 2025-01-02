@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Signalement;
 use App\Form\SignalementType;
 use App\Repository\SignalementRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -77,5 +78,27 @@ final class SignalementController extends AbstractController
         }
 
         return $this->redirectToRoute('app_signalement_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/signalement/ban', name: 'app_signalement_ban', methods: ['POST'])]
+    public function ban(Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
+    {
+        $userId = $request->request->get('userId');
+        $dateFinBan = $request->request->get('dateFinBan');
+
+        // Vérifier si l'utilisateur existe
+        $user = $userRepository->find($userId);
+        if (!$user) {
+            throw $this->createNotFoundException('User not found');
+        }
+
+        // Mettre à jour la date de fin de bannissement
+        $user->setDateFinBan(new \DateTime($dateFinBan));
+
+        // Sauvegarder les changements dans la base de données
+        $entityManager->flush();
+
+        // Rediriger vers la liste des signalements
+        return $this->redirectToRoute('app_signalement_index');
     }
 }

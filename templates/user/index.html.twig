@@ -10,52 +10,90 @@
     {% block sidebar %}
         {{ parent() }}
     {% endblock %}
-      {% block content %}
-<div class="content">
-    {% block navbar %}
-        {{ parent() }}
+
+    {% block content %}
+        <div class="content">
+            {% block navbar %}
+                {{ parent() }}
+            {% endblock %}
+
+            <h1>User index</h1>
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Roles</th>
+                    <th>ProfilePic</th>
+                    <th>DateFinBan</th>
+                    <th>CreatedAt</th>
+                    <th>Nombre de signalements</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
+                        <td>{{ user.profilePic }}</td>
+                        <td>{{ user.dateFinBan ? user.dateFinBan|date('Y-m-d H:i:s') : '' }}</td>
+                        <td>{{ user.createdAt ? user.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                        <td>{{ userSignalements[user.id] }}</td>
+                        <td>
+                            <a href="{{ path('app_user_show', {'id': user.id}) }}">Show</a>
+                            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#banModal" data-user-id="{{ user.id }}" data-user-username="{{ user.username }}">Bannir</button>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="8">No records found</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Modal de Bannissement -->
+        <div class="modal fade" id="banModal" tabindex="-1" aria-labelledby="banModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="banModalLabel">Bannir l'utilisateur</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="banForm" method="post" action="{{ path('app_user_ban') }}">
+                            <div class="mb-3">
+                                <label for="banDate" class="form-label">Date de fin de bannissement</label>
+                                <input type="datetime-local" class="form-control" id="banDate" name="dateFinBan" required>
+                            </div>
+                            <input type="hidden" id="userId" name="userId">
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                <button type="submit" class="btn btn-danger">Bannir</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            // Remplir le formulaire du modal avec les informations de l'utilisateur
+            var banModal = document.getElementById('banModal');
+            banModal.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget; // Le bouton qui a ouvert le modal
+                var userId = button.getAttribute('data-user-id');
+                var username = button.getAttribute('data-user-username');
+
+                // Remplir le champ caché du formulaire avec l'ID de l'utilisateur
+                var userIdInput = document.getElementById('userId');
+                userIdInput.value = userId;
+            });
+        </script>
     {% endblock %}
-
-    <h1>User index</h1>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Email</th>
-                <th>Roles</th>
-                <th>Password</th>
-                <th>ProfilePic</th>
-                <th>DateFinBan</th>
-                <th>CreatedAt</th>
-                <th>Username</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for user in users %}
-            <tr>
-                <td>{{ user.id }}</td>
-                <td>{{ user.email }}</td>
-                <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
-                <td>{{ user.password }}</td>
-                <td>{{ user.profilePic }}</td>
-                <td>{{ user.dateFinBan ? user.dateFinBan|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ user.createdAt ? user.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ user.username }}</td>
-                <td>
-                    <a href="{{ path('app_user_show', {'id': user.id}) }}">show</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="9">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_user_new') }}">Create new</a>
-</div>
 {% endblock %}
-    {% endblock %}
+
+

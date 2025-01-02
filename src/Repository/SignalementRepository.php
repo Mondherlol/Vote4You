@@ -40,4 +40,15 @@ class SignalementRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    // Ajouter une méthode pour compter le nombre de signalements faits par un utilisateur
+    public function countSignalementsByUser($userId)
+    {
+        return $this->createQueryBuilder('s')
+            ->select('COUNT(s.id)')
+            ->where('s.userSignaleur = :userId')
+            ->setParameter('userId', $userId)
+            ->getQuery()
+            ->getSingleScalarResult(); // Retourne un seul nombre
+    }
 }

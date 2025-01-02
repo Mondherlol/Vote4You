@@ -1,6 +1,6 @@
 {% extends '/profile/index.html.twig' %}
 
-{% block title %}User index{% endblock %}
+{% block title %}Détails du Sondage{% endblock %}
 
 {% block body %}
     {% block spinner %}
@@ -10,82 +10,103 @@
     {% block sidebar %}
         {{ parent() }}
     {% endblock %}
+
     {% block content %}
-        <div class="content">
+        <div class="container mt-5">
             {% block navbar %}
                 {{ parent() }}
             {% endblock %}
-            <h1>Sondage</h1>
+
+            <h1 class="text-center text-primary mb-4">Détails du Sondage</h1>
+
             {% if sondage %}
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0">Informations du Sondage</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <tbody>
+                            <tr>
+                                <th>Id</th>
+                                <td>{{ sondage.id }}</td>
+                            </tr>
+                            <tr>
+                                <th>Titre</th>
+                                <td>{{ sondage.titre }}</td>
+                            </tr>
+                            <tr>
+                                <th>Description</th>
+                                <td>{{ sondage.description }}</td>
+                            </tr>
+                            <tr>
+                                <th>Image</th>
+                                <td>
+                                    {% if sondage.image %}
+                                        <img src="{{ asset('uploads/sondage/' ~ sondage.image) }}" alt="{{ sondage.titre }}" class="img-fluid" style="max-width: 200px;">
+                                    {% else %}
+                                        <span>Aucune image disponible</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Publique</th>
+                                <td>{{ sondage.publique ? 'Oui' : 'Non' }}</td>
+                            </tr>
+                            <tr>
+                                <th>Date de fin</th>
+                                <td>{{ sondage.dateFin ? sondage.dateFin|date('Y-m-d H:i:s') : 'Non définie' }}</td>
+                            </tr>
+                            <tr>
+                                <th>Créé le</th>
+                                <td>{{ sondage.createdAt ? sondage.createdAt|date('Y-m-d H:i:s') : 'Non disponible' }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
-            <table class="table">
-                <tbody>
-                <tr>
-                    <th>Id</th>
-                    <td>{{ sondage.id }}</td>
-                </tr>
-                <tr>
-                    <th>Titre</th>
-                    <td>{{ sondage.titre }}</td>
-                </tr>
-                <tr>
-                    <th>Description</th>
-                    <td>{{ sondage.description }}</td>
-                </tr>
-                <tr>
-                    <th>Image</th>
-                    <td>{{ sondage.image }}</td>
-                </tr>
-                <tr>
-                    <th>Publique</th>
-                    <td>{{ sondage.publique ? 'Yes' : 'No' }}</td>
-                </tr>
-                <tr>
-                    <th>Date_fin</th>
-                    <td>{{ sondage.dateFin ? sondage.dateFin|date('Y-m-d H:i:s') : '' }}</td>
-                </tr>
-                <tr>
-                    <th>CreatedAt</th>
-                    <td>{{ sondage.createdAt ? sondage.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-                </tr>
-                </tbody>
-            </table>
-            <h2>Choix associés</h2>
+                <h2 class="text-secondary mb-3">Choix associés</h2>
                 {% if choix|length > 0 %}
-                <ul>
-                    {% for choix in choix %}
-                        <li>
-                            <strong>{{ choix.titre }}</strong>
-                            {% if choix.image %}
-                                <img src="{{ asset('uploads/choix/' ~ choix.image) }}" alt="{{ choix.titre }}" width="100">
-                            {% endif %}
-                            <p>Nombre de votes : {{ choix.votes }}</p>
-                        </li>
-                    {% endfor %}
-                </ul>
+                    <div class="row">
+                        {% for choix in choix %}
+                            <div class="col-md-4 mb-4">
+                                <div class="card">
+                                    <img src="{{ asset('uploads/choix/' ~ choix.image) }}" class="card-img-top" alt="{{ choix.titre }}" style="height: 200px; object-fit: cover;">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ choix.titre }}</h5>
+                                        <p class="card-text">Nombre de votes : {{ choix.votes }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
                 {% else %}
-                    <p>Aucun choix n'est associé à ce sondage.</p>
+                    <div class="alert alert-info" role="alert">
+                        Aucun choix n'est associé à ce sondage.
+                    </div>
                 {% endif %}
-                    <h2>Commentaire associés</h2>
-                    {% if commentaires|length > 0 %}
-                <ul>
 
-                {% for com in commentaires %}
-                    <li>
-                        <strong>{{ com.username }}</strong>
-                        <p>{{ com.texte }}</p>
-
-                    </li>
-                {% endfor %}
-
-            </ul>
+                <h2 class="text-secondary mt-4 mb-3">Commentaires associés</h2>
+                {% if commentaires|length > 0 %}
+                    <div class="list-group">
+                        {% for com in commentaires %}
+                            <div class="list-group-item">
+                                <strong>{{ com.username }}</strong>
+                                <p>{{ com.texte }}</p>
+                            </div>
+                        {% endfor %}
+                    </div>
                 {% else %}
-                    <p>Aucun commentaire n'est associé à ce sondage.</p>
+                    <div class="alert alert-info" role="alert">
+                        Aucun commentaire n'est associé à ce sondage.
+                    </div>
                 {% endif %}
+            {% else %}
+                <div class="alert alert-warning text-center" role="alert">
+                    Aucun sondage trouvé.
+                </div>
             {% endif %}
-
         </div>
-
-
     {% endblock %}
 {% endblock %}

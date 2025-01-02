@@ -83,88 +83,92 @@
                         <a href="index.html" class="navbar-brand d-flex d-lg-none me-4">
                             <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
                         </a>
-                        <a href="#" class="sidebar-toggler flex-shrink-0">
-                            <i class="fa fa-bars"></i>
-                        </a>
-                        <form class="d-none d-md-flex ms-4">
-                            <input class="form-control border-0" type="search" placeholder="Search">
-                        </form>
-                        <div class="navbar-nav align-items-center ms-auto">
-                            <div class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                                    <i class="fa fa-envelope me-lg-2"></i>
-                                    <span class="d-none d-lg-inline-flex">Message</span>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                                    <a href="#" class="dropdown-item">
-                                        <div class="d-flex align-items-center">
-                                            <img class="rounded-circle" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
-                                            <div class="ms-2">
-                                                <h6 class="fw-normal mb-0">Jhon send you a message</h6>
-                                                <small>15 minutes ago</small>
-                                            </div>
-                                        </div>
-                                    </a>
-                                    <hr class="dropdown-divider">
-                                    <a href="#" class="dropdown-item">
-                                        <div class="d-flex align-items-center">
-                                            <img class="rounded-circle" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
-                                            <div class="ms-2">
-                                                <h6 class="fw-normal mb-0">Jhon send you a message</h6>
-                                                <small>15 minutes ago</small>
-                                            </div>
-                                        </div>
-                                    </a>
-                                    <hr class="dropdown-divider">
-                                    <a href="#" class="dropdown-item">
-                                        <div class="d-flex align-items-center">
-                                            <img class="rounded-circle" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
-                                            <div class="ms-2">
-                                                <h6 class="fw-normal mb-0">Jhon send you a message</h6>
-                                                <small>15 minutes ago</small>
-                                            </div>
-                                        </div>
-                                    </a>
-                                    <hr class="dropdown-divider">
-                                    <a href="#" class="dropdown-item text-center">See all message</a>
-                                </div>
-                            </div>
-                            <div class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                                    <i class="fa fa-bell me-lg-2"></i>
-                                    <span class="d-none d-lg-inline-flex">Notificatin</span>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                                    <a href="#" class="dropdown-item">
-                                        <h6 class="fw-normal mb-0">Profile updated</h6>
-                                        <small>15 minutes ago</small>
-                                    </a>
-                                    <hr class="dropdown-divider">
-                                    <a href="#" class="dropdown-item">
-                                        <h6 class="fw-normal mb-0">New user added</h6>
-                                        <small>15 minutes ago</small>
-                                    </a>
-                                    <hr class="dropdown-divider">
-                                    <a href="#" class="dropdown-item">
-                                        <h6 class="fw-normal mb-0">Password changed</h6>
-                                        <small>15 minutes ago</small>
-                                    </a>
-                                    <hr class="dropdown-divider">
-                                    <a href="#" class="dropdown-item text-center">See all notifications</a>
-                                </div>
-                            </div>
-                            <div class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                                    <img class="rounded-circle me-lg-2" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
-                                    <span class="d-none d-lg-inline-flex">John Doe</span>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                                    <a href="#" class="dropdown-item">My Profile</a>
-                                    <a href="#" class="dropdown-item">Settings</a>
-                                    <a href="#" class="dropdown-item">Log Out</a>
-                                </div>
-                            </div>
-                        </div>
+
+                        <!-- <a href="#" class="sidebar-toggler flex-shrink-0">
+                             <i class="fa fa-bars"></i>
+                         </a>
+                         <form class="d-none d-md-flex ms-4">
+                             <input class="form-control border-0" type="search" placeholder="Search">
+                         </form>-->
+                         <div class="navbar-nav align-items-center ms-auto">
+                             <a href="{{ path('home' )}}" class="nav-item nav-link "><i class="fa fa-home me-2"></i>Acueil</a>
+                             <a href="{{ path('app_logout') }}" class="nav-item nav-link" ><i class="fa fa-user me-2"></i>Logout</a>
+
+                             <!--<div class="nav-item dropdown">
+                                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                                     <i class="fa fa-envelope me-lg-2"></i>
+                                     <span class="d-none d-lg-inline-flex">Message</span>
+                                 </a>
+                                 <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
+                                     <a href="#" class="dropdown-item">
+                                         <div class="d-flex align-items-center">
+                                             <img class="rounded-circle" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                                             <div class="ms-2">
+                                                 <h6 class="fw-normal mb-0">Jhon send you a message</h6>
+                                                 <small>15 minutes ago</small>
+                                             </div>
+                                         </div>
+                                     </a>
+                                     <hr class="dropdown-divider">
+                                     <a href="#" class="dropdown-item">
+                                         <div class="d-flex align-items-center">
+                                             <img class="rounded-circle" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                                             <div class="ms-2">
+                                                 <h6 class="fw-normal mb-0">Jhon send you a message</h6>
+                                                 <small>15 minutes ago</small>
+                                             </div>
+                                         </div>
+                                     </a>
+                                     <hr class="dropdown-divider">
+                                     <a href="#" class="dropdown-item">
+                                         <div class="d-flex align-items-center">
+                                             <img class="rounded-circle" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                                             <div class="ms-2">
+                                                 <h6 class="fw-normal mb-0">Jhon send you a message</h6>
+                                                 <small>15 minutes ago</small>
+                                             </div>
+                                         </div>
+                                     </a>
+                                     <hr class="dropdown-divider">
+                                     <a href="#" class="dropdown-item text-center">See all message</a>
+                                 </div>
+                             </div>
+                             <div class="nav-item dropdown">
+                                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                                     <i class="fa fa-bell me-lg-2"></i>
+                                     <span class="d-none d-lg-inline-flex">Notificatin</span>
+                                 </a>
+                                 <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
+                                     <a href="#" class="dropdown-item">
+                                         <h6 class="fw-normal mb-0">Profile updated</h6>
+                                         <small>15 minutes ago</small>
+                                     </a>
+                                     <hr class="dropdown-divider">
+                                     <a href="#" class="dropdown-item">
+                                         <h6 class="fw-normal mb-0">New user added</h6>
+                                         <small>15 minutes ago</small>
+                                     </a>
+                                     <hr class="dropdown-divider">
+                                     <a href="#" class="dropdown-item">
+                                         <h6 class="fw-normal mb-0">Password changed</h6>
+                                         <small>15 minutes ago</small>
+                                     </a>
+                                     <hr class="dropdown-divider">
+                                     <a href="#" class="dropdown-item text-center">See all notifications</a>
+                                 </div>
+                             </div>
+                             <div class="nav-item dropdown">
+                                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                                     <img class="rounded-circle me-lg-2" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                                     <span class="d-none d-lg-inline-flex">John Doe</span>
+                                 </a>
+                                 <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
+                                     <a href="#" class="dropdown-item">My Profile</a>
+                                     <a href="#" class="dropdown-item">Settings</a>
+                                     <a href="#" class="dropdown-item">Log Out</a>
+                                 </div>
+                             </div>-->
+                         </div>
                     </nav>
                     <!-- Navbar End -->
                 {% endblock %}
@@ -222,7 +226,7 @@
                             <div class="bg-light text-center rounded p-4">
                                 <div class="d-flex align-items-center justify-content-between mb-4">
                                     <h6 class="mb-0">Sondages par thème</h6>
-                                    <a href="">Show All</a>
+                                    <a href="{{ path('app_sondage_index') }}">Show All</a>
                                 </div>
                                 <canvas id="worldwide-sales"></canvas>
                                 <script>
@@ -239,7 +243,7 @@
                             <div class="bg-light text-center rounded p-4">
                                 <div class="d-flex align-items-center justify-content-between mb-4">
                                     <h6 class="mb-0">Sondages par Mois</h6>
-                                    <a href="">Show All</a>
+                                    <a href="{{ path('app_sondage_index') }}">Show All</a>
                                 </div>
                                 <canvas id="salse-revenue"></canvas>
                                 <script>
@@ -254,78 +258,6 @@
                 <!-- Sales Chart End -->
 
 
-                <!-- Recent Sales Start -->
-                <div class="container-fluid pt-4 px-4">
-                    <div class="bg-light text-center rounded p-4">
-                        <div class="d-flex align-items-center justify-content-between mb-4">
-                            <h6 class="mb-0">Recent Salse</h6>
-                            <a href="">Show All</a>
-                        </div>
-                        <div class="table-responsive">
-                            <table class="table text-start align-middle table-bordered table-hover mb-0">
-                                <thead>
-                                <tr class="text-dark">
-                                    <th scope="col"><input class="form-check-input" type="checkbox"></th>
-                                    <th scope="col">Date</th>
-                                    <th scope="col">Invoice</th>
-                                    <th scope="col">Customer</th>
-                                    <th scope="col">Amount</th>
-                                    <th scope="col">Status</th>
-                                    <th scope="col">Action</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td><input class="form-check-input" type="checkbox"></td>
-                                    <td>01 Jan 2045</td>
-                                    <td>INV-0123</td>
-                                    <td>Jhon Doe</td>
-                                    <td>$123</td>
-                                    <td>Paid</td>
-                                    <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
-                                </tr>
-                                <tr>
-                                    <td><input class="form-check-input" type="checkbox"></td>
-                                    <td>01 Jan 2045</td>
-                                    <td>INV-0123</td>
-                                    <td>Jhon Doe</td>
-                                    <td>$123</td>
-                                    <td>Paid</td>
-                                    <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
-                                </tr>
-                                <tr>
-                                    <td><input class="form-check-input" type="checkbox"></td>
-                                    <td>01 Jan 2045</td>
-                                    <td>INV-0123</td>
-                                    <td>Jhon Doe</td>
-                                    <td>$123</td>
-                                    <td>Paid</td>
-                                    <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
-                                </tr>
-                                <tr>
-                                    <td><input class="form-check-input" type="checkbox"></td>
-                                    <td>01 Jan 2045</td>
-                                    <td>INV-0123</td>
-                                    <td>Jhon Doe</td>
-                                    <td>$123</td>
-                                    <td>Paid</td>
-                                    <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
-                                </tr>
-                                <tr>
-                                    <td><input class="form-check-input" type="checkbox"></td>
-                                    <td>01 Jan 2045</td>
-                                    <td>INV-0123</td>
-                                    <td>Jhon Doe</td>
-                                    <td>$123</td>
-                                    <td>Paid</td>
-                                    <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <!-- Recent Sales End -->
 
 
                 <!-- Widgets Start -->
@@ -334,17 +266,19 @@
                         <div class="col-sm-12 col-md-6 col-xl-4">
                             <div class="h-100 bg-light rounded p-4">
                                 <div class="d-flex align-items-center justify-content-between mb-2">
-                                    <h6 class="mb-0">Messages</h6>
-                                    <a href="">Show All</a>
+                                    <h6 class="mb-0">Signalements</h6>
+                                    <a href="{{ path('app_signalement_index') }}">Show All</a>
                                 </div>
                                 {% for signalement in listeSignalements %}
 
                                 <div class="d-flex align-items-center border-bottom py-3">
-                                    <img class="rounded-circle flex-shrink-0" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                                    <img class="rounded-circle flex-shrink-0"
+                                         src="{{ asset(signalement.userSignaleur.profilePic ? signalement.userSignaleur.profilePic : 'images/default-profile.jpg') }}"
+                                         alt=""
+                                         style="width: 40px; height: 40px;">
                                     <div class="w-100 ms-3">
                                         <div class="d-flex w-100 justify-content-between">
                                             <h6 class="mb-0">{{ signalement.userSignaleur.username }}</h6>
-                                            <small>15 minutes ago</small>
                                         </div>
                                         <span>{{ signalement.raison }}</span>
                                     </div>
@@ -358,61 +292,45 @@
                             <div class="h-100 bg-light rounded p-4">
                                 <div class="d-flex align-items-center justify-content-between mb-4">
                                     <h6 class="mb-0">Calender</h6>
-                                    <a href="">Show All</a>
                                 </div>
                                 <div id="calender"></div>
                             </div>
                         </div>
                         <div class="col-sm-12 col-md-6 col-xl-4">
-                            <div class="h-100 bg-light rounded p-4">
-                                <div class="d-flex align-items-center justify-content-between mb-4">
-                                    <h6 class="mb-0">Liste Theme</h6>
-                                    <a href="">Show All</a>
-                                </div>
-                                <div class="d-flex mb-2">
-                                    <input class="form-control bg-transparent" type="text" placeholder="Enter task">
-                                    <button type="button" class="btn btn-primary ms-2">Add</button>
-                                </div>
-                                {% for theme in listeThemes %}
+                                <div class="h-100 bg-light rounded p-4">
+                                    <div class="d-flex align-items-center justify-content-between mb-4">
+                                        <h6 class="mb-0">Liste Theme</h6>
+                                        <a href="{{ path('app_theme_index') }}">Show All</a>
+                                    </div>
+                                    <form method="POST" action="{{ path('app_theme_new') }}">
 
-                                <div class="d-flex align-items-center border-bottom py-2">
-                                    <div class="w-100 ms-3">
-                                        <div class="d-flex w-100 align-items-center justify-content-between">
-                                            <span>{{ theme.libelle }}</span>
-                                            <button class="btn btn-sm"><i class="fa fa-times"></i></button>
-                                        </div>
+                                    <div class="d-flex mb-2">
+                                            <input class="form-control bg-transparent" type="text" name="libelle" placeholder="Enter Theme" id="themeInput">
+                                            <button type="submit" class="btn btn-primary ms-2" id="addThemeButton">Add</button>
+                                    </div>
+                                    </form>
+
+                                    <div id="themeList">
+                                        {% for theme in listeThemes %}
+                                            <div class="d-flex align-items-center border-bottom py-2" id="theme_{{ theme.id }}">
+                                                <div class="w-100 ms-3">
+                                                    <div class="d-flex w-100 align-items-center justify-content-between">
+                                                        <span>{{ theme.libelle }}</span>
+                                                        <form method="post" action="{{ path('app_theme_delete', {'id': theme.id}) }}" style="display: inline-block;" class="delete-theme-form" onsubmit="return confirmDeletion()">
+                                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ theme.id) }}">
+                                                            <button type="submit" class="btn btn-sm  delete-btn"><i class="fa fa-times"></i></button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
                                     </div>
                                 </div>
-                                {% endfor %}
-
-
-
-                            </div>
                         </div>
                     </div>
                 </div>
                 <!-- Widgets End -->
 
-
-                {% block footer %}
-                    <!-- Footer Start -->
-                    <div class="container-fluid pt-4 px-4">
-                        <div class="bg-light rounded-top p-4">
-                            <div class="row">
-                                <div class="col-12 col-sm-6 text-center text-sm-start">
-                                    &copy; <a href="#">Your Site Name</a>, All Right Reserved.
-                                </div>
-                                <div class="col-12 col-sm-6 text-center text-sm-end">
-                                    <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
-                                    Designed By <a href="https://htmlcodex.com">HTML Codex</a>
-                                    </br>
-                                    Distributed By <a class="border-bottom" href="https://themewagon.com" target="_blank">ThemeWagon</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Footer End -->
-                {% endblock %}
 
             </div>
             <!-- Content End -->
@@ -423,6 +341,25 @@
         <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>
 {% endblock %}
+<script>
+    // Gérer la confirmation de suppression
+    document.querySelectorAll('.delete-btn').forEach(function(button) {
+        button.addEventListener('click', function(event) {
+            const themeId = event.target.getAttribute('data-id');
+
+            // Afficher une boîte de confirmation
+            const confirmed = confirm("Êtes-vous sûr de vouloir supprimer ce thème ?");
+
+            if (confirmed) {
+                // Si l'utilisateur confirme, soumettre le formulaire
+                const form = event.target.closest('form');
+                form.submit();
+            }
+        });
+    });
+</script>
+
+
 <!-- JavaScript Libraries -->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>

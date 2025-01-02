@@ -40,4 +40,15 @@ class CommentaireRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    // Ajouter une méthode pour compter le nombre de commentaires faits par un utilisateur
+    public function countCommentairesByUser($userId)
+    {
+        return $this->createQueryBuilder('c')
+            ->select('COUNT(c.id)')
+            ->where('c.owner = :userId')
+            ->setParameter('userId', $userId)
+            ->getQuery()
+            ->getSingleScalarResult(); // Retourne un seul nombre
+    }
 }

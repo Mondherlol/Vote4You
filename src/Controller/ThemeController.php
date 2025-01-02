@@ -24,7 +24,7 @@ final class ThemeController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_theme_new', methods: ['GET', 'POST'])]
+    /*#[Route('/new', name: 'app_theme_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $theme = new Theme();
@@ -42,7 +42,50 @@ final class ThemeController extends AbstractController
             'theme' => $theme,
             'form' => $form,
         ]);
+    }*/
+
+    #[Route('/new', name: 'app_theme_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        // Créer une nouvelle instance du thème
+        $theme = new Theme();
+
+        // Vérifier si une requête POST est envoyée pour ajouter un thème directement (via le champ libelle)
+        if ($request->isMethod('POST')&& $request->request->get('libelle')) {
+            $themeName = $request->request->get('libelle');  // Récupérer le libellé du thème depuis le formulaire
+
+            if ($themeName) {
+                $theme->setLibelle($themeName);  // Ajouter le libellé au nouvel objet thème
+
+                // Persister et sauvegarder le thème dans la base de données
+                $entityManager->persist($theme);
+                $entityManager->flush();
+            }
+
+            // Rediriger vers la liste des thèmes après l'ajout
+            return $this->redirectToRoute('app_admin_index');
+        }
+
+        // Cas d'accès au formulaire complet pour ajouter un thème
+        $form = $this->createForm(ThemeType::class, $theme);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($theme);
+            $entityManager->flush();
+
+            // Redirection après soumission du formulaire
+            return $this->redirectToRoute('app_theme_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        // Si la requête n'est pas une soumission directe, afficher le formulaire
+        return $this->render('theme/new.html.twig', [
+            'theme' => $theme,
+            'form' => $form->createView(),
+        ]);
     }
+
+
 
     #[Route('/{id}', name: 'app_theme_show', methods: ['GET'])]
     public function show(Theme $theme): Response
@@ -78,6 +121,6 @@ final class ThemeController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_theme_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_admin_index', [], Response::HTTP_SEE_OTHER);
     }
 }

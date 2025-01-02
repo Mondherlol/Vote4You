@@ -67,6 +67,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $commentaires;
 
     #[ORM\Column(length: 1000, nullable: true)]
+    #[Assert\Image(
+        maxSize: '2M',
+        mimeTypes: ['image/jpeg', 'image/png'],
+        mimeTypesMessage: 'Veuillez télécharger une image valide (JPEG ou PNG).'
+    )]
     private ?string $profilePic = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]

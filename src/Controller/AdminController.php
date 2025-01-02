@@ -65,20 +65,23 @@ final class AdminController extends AbstractController
         ');
          $result=$qb->getResult();
 
-        // Créez des labels et des valeurs pour chaque mois
-        $labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        $values = array_fill(0, 12, 0);
+        // Initialiser le tableau pour stocker le nombre de sondages par mois
+        $sondageParMois = [
+            'January' => 0, 'February' => 0, 'March' => 0, 'April' => 0, 'May' => 0,
+            'June' => 0, 'July' => 0, 'August' => 0, 'September' => 0, 'October' => 0,
+            'November' => 0, 'December' => 0
+        ];
+        $sondages= $sondageRepository->findAll();
+        // Remplir le tableau avec les données réelles des sondages
+        foreach ($sondages as $sondage) {
+            $month = $sondage->getCreatedAt()->format('F'); // Récupérer le mois en format texte
+            $sondageParMois[$month]++; // Incrémenter le nombre de sondages pour ce mois
+        }
 
-        foreach ($result as $item) {
+        /*foreach ($result as $item) {
             $mois = (int) $item['mois'];
             $values[$mois - 1] = (int) $item['nombre'];
-        }
-
-        // Création du tableau associatif final
-        $sondageParMois = [];
-        foreach ($labels as $index => $label) {
-            $sondageParMois[$label] = $values[$index]; // Associe le label (mois) à la valeur
-        }
+        }*/
 
         //liste signalements
         $listeSignalements=$signalementRepository->findAll();

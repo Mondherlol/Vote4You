@@ -6,6 +6,7 @@ use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -18,17 +19,19 @@ class UserType extends AbstractType
     {
         $builder
             ->add('email')
-            ->add('roles', ChoiceType::class, [
+            /*->add('roles', ChoiceType::class, [
                 'choices' => [
                     'ROLE_ADMIN' => 'ROLE_ADMIN',
                     'ROLE_USER' => 'ROLE_USER',
 
                 ]
-            ])
+            ])*/
             ->add('plainPassword', PasswordType::class, [
                 // instead of being set onto the object directly,
                 // this is read and encoded in the controller
                 'mapped' => false,
+                'required' => false,
+
                 'attr' => ['autocomplete' => 'new-password'],
                 'constraints' => [
                     new NotBlank([
@@ -42,17 +45,15 @@ class UserType extends AbstractType
                     ]),
                 ],
             ])
-            ->add('profilePic')
-            ->add('dateFinBan', null, [
-                'widget' => 'single_text',
-            ])
-            ->add('createdAt', null, [
-                'widget' => 'single_text',
+            ->add('profilePic', FileType::class, [
+                'label' => 'Photo de profil (JPG/PNG)',
+                'required' => false,
+                'mapped' => false, // Si le fichier n'est pas directement mappé à une propriété de l'entité
             ])
             ->add('username')
         ;
 
-        $builder->get('roles')
+        /*$builder->get('roles')
             ->addModelTransformer(new CallbackTransformer(
                 function ($tagAsArray) :string{
                     //transform the array to a string
@@ -64,6 +65,7 @@ class UserType extends AbstractType
 
                 },
             ));
+        */
     }
 
     public function configureOptions(OptionsResolver $resolver): void

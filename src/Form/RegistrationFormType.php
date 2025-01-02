@@ -13,6 +13,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Vich\UploaderBundle\Entity\File;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class RegistrationFormType extends AbstractType
 {
@@ -21,13 +24,13 @@ class RegistrationFormType extends AbstractType
         $builder
             ->add('email')
             ->add('username')
-            ->add('roles', ChoiceType::class, [
+            /*->add('roles', ChoiceType::class, [
                 'choices' => [
                     'ROLE_ADMIN' => 'ROLE_ADMIN',
                     'ROLE_USER' => 'ROLE_USER',
 
                 ]
-            ])
+            ])*/
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
                 'constraints' => [
@@ -53,8 +56,14 @@ class RegistrationFormType extends AbstractType
                     ]),
                 ],
             ])
-        ;
-        $builder->get('roles')
+
+            ->add('profilePic', FileType::class, [
+            'label' => 'Photo de profil (JPEG ou PNG)',
+            'mapped' => false,
+            'required' => false,
+
+        ]);
+        /*$builder->get('roles')
             ->addModelTransformer(new CallbackTransformer(
                 function ($tagAsArray) :string{
                     //transform the array to a string
@@ -66,6 +75,7 @@ class RegistrationFormType extends AbstractType
 
                 },
             ));
+        */
     }
 
     public function configureOptions(OptionsResolver $resolver): void

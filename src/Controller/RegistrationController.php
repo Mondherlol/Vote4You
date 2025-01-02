@@ -10,6 +10,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
@@ -30,10 +32,27 @@ class RegistrationController extends AbstractController
         $user = new User();
         $user->setCreatedAt(new \DateTimeImmutable());
 
+        // Affecter directement le rôle ROLE_USER à l'utilisateur
+        $user->setRoles(['ROLE_USER']);  // Assurez-vous que cela ne supprime pas d'autres rôles si nécessaire
+
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var UploadedFile|null $profilePicFile */
+            $profilePicFile = $form->get('profilePic')->getData();
+
+            if ($profilePicFile) {
+                $uploadsDir = $this->getParameter('kernel.project_dir') . '/public/uploads/images';
+                $newFilename = uniqid() . '.' . $profilePicFile->guessExtension();
+
+                // Déplacez le fichier vers le dossier d'uploads
+                $profilePicFile->move($uploadsDir, $newFilename);
+
+                // Mettre à jour le chemin de l'image dans l'entité utilisateur
+                $user->setProfilePic('/uploads/images/' . $newFilename);
+            }
+
             /** @var string $plainPassword */
             $plainPassword = $form->get('plainPassword')->getData();
 

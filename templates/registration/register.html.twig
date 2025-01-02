@@ -3,27 +3,76 @@
 {% block title %}Register{% endblock %}
 
 {% block body %}
+    <!-- Display Flash Messages -->
     {% for flash_error in app.flashes('verify_email_error') %}
         <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
     {% endfor %}
+
     {% if app.user %}
         <div class="mb-3">
-            You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+            You are logged in as <strong>{{ app.user.userIdentifier }}</strong>, <a href="{{ path('app_logout') }}" class="btn btn-link">Logout</a>
         </div>
     {% endif %}
 
-    <h1>Register</h1>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow-lg">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h3>Register</h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" action="{{ path('app_register') }}" novalidate>
+                            {{ form_start(registrationForm) }}
 
-    {{ form_errors(registrationForm) }}
+                            <!-- Username Field -->
+                            <div class="mb-3">
+                                {{ form_label(registrationForm.username, 'Username', {'attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(registrationForm.username, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(registrationForm.username) }}
+                            </div>
 
-    {{ form_start(registrationForm) }}
-    {{ form_row(registrationForm.username) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
+                            <!-- Email Field -->
+                            <div class="mb-3">
+                                {{ form_label(registrationForm.email, 'Email', {'attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(registrationForm.email) }}
+                            </div>
 
-        <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm) }}
+                            <!-- Profile Picture Field -->
+                            <div class="mb-3">
+                                {{ form_label(registrationForm.profilePic, 'Profile Picture', {'attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(registrationForm.profilePic, {'attr': {'class': 'form-control', 'type': 'file'}}) }}
+                                {{ form_errors(registrationForm.profilePic) }}
+                                <small class="text-muted">Téléchargez une nouvelle photo (formats acceptés : JPG, PNG).</small>
+
+                            </div>
+
+                            <!-- Password Field -->
+                            <div class="mb-3">
+                                {{ form_label(registrationForm.plainPassword, 'Password', {'attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(registrationForm.plainPassword, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(registrationForm.plainPassword) }}
+                            </div>
+
+                            <!-- Terms Agreement Field -->
+                            <div class="mb-3 form-check">
+                                {{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'form-check-input'}}) }}
+                                {{ form_label(registrationForm.agreeTerms, 'I agree to the terms and conditions', {'attr': {'class': 'form-check-label'}}) }}
+                                {{ form_errors(registrationForm.agreeTerms) }}
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary btn-lg">Register</button>
+                            </div>
+
+                            {{ form_end(registrationForm) }}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}

@@ -10,41 +10,104 @@
     {% block sidebar %}
         {{ parent() }}
     {% endblock %}
-      {% block content %}
-<div class="content">
-    {% block navbar %}
-        {{ parent() }}
+
+    {% block content %}
+        <div class="content">
+            {% block navbar %}
+                {{ parent() }}
+            {% endblock %}
+
+            <h1>Signalement index</h1>
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Raison</th>
+                    <th>Signaleur</th>
+                    <th>Personne Signalée</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for signalement in signalements %}
+                    <tr>
+                        <td>{{ signalement.id }}</td>
+                        <td>{{ signalement.raison }}</td>
+                        <td>
+                            {% if signalement.userSignaleur %}
+                                <a href="{{ path('app_user_show', {'id': signalement.userSignaleur.id}) }}">
+                                    {{ signalement.userSignaleur.username }}
+                                </a>
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if signalement.userSignaler %}
+                                <a href="{{ path('app_user_show', {'id': signalement.userSignaler.id}) }}">
+                                    {{ signalement.userSignaler.username }}
+                                </a>
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if signalement.userSignaler %}
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#banModal" data-user-id="{{ signalement.userSignaler.id }}" data-user-username="{{ signalement.userSignaler.username }}">
+                                    Bannir
+                                </button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5">No records found</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+
+        <!-- Modal Bannir Utilisateur -->
+        <div class="modal fade" id="banModal" tabindex="-1" aria-labelledby="banModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="banModalLabel">Bannir l'utilisateur</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="banForm" method="post" action="{{ path('app_signalement_ban') }}">
+                            <div class="mb-3">
+                                <label for="banDate" class="form-label">Date de fin de bannissement</label>
+                                <input type="datetime-local" class="form-control" id="banDate" name="dateFinBan" required>
+                            </div>
+                            <input type="hidden" id="userId" name="userId">
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                <button type="submit" class="btn btn-danger">Bannir</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            // Remplir le formulaire du modal avec les informations de l'utilisateur
+            var banModal = document.getElementById('banModal');
+            banModal.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget; // Le bouton qui a ouvert le modal
+                var userId = button.getAttribute('data-user-id');
+                var username = button.getAttribute('data-user-username');
+
+                // Remplir le champ caché du formulaire avec l'ID de l'utilisateur
+                var userIdInput = document.getElementById('userId');
+                userIdInput.value = userId;
+            });
+        </script>
+
     {% endblock %}
-    <h1>Signalement index</h1>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Raison</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for signalement in signalements %}
-            <tr>
-                <td>{{ signalement.id }}</td>
-                <td>{{ signalement.raison }}</td>
-                <td>
-                    <a href="{{ path('app_signalement_show', {'id': signalement.id}) }}">show</a>
-                    <a href="{{ path('app_signalement_edit', {'id': signalement.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="3">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_signalement_new') }}">Create new</a>
-</div>
-
-      {% endblock %}
 {% endblock %}
+
