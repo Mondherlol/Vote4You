@@ -34,7 +34,7 @@ final class SondageController extends AbstractController
         ]);
     }
 
-    #[IsGranted('ROLE_USER')]
+
     #[Route('/new', name: 'app_sondage_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, ThemeRepository $themeRepository, UploaderHelper $uploaderHelper,UserRepository $userRepository): Response
     {
@@ -114,7 +114,9 @@ final class SondageController extends AbstractController
             $this->addFlash('success', 'Sondage ajouté avec succès, ainsi que ses choix et thèmes associés !');
 
             // Rediriger vers une autre page, par exemple, la liste des sondages
-            return $this->redirectToRoute('app_sondage_index');
+            return $this->redirectToRoute('app_profile_sondages', [
+                'id' => $this->getUser()->getId(), // Envoie de l'ID de l'utilisateur
+            ]);
 
         }
 
@@ -132,35 +134,45 @@ final class SondageController extends AbstractController
         // Récupérer les choix du sondage
         $choix = $sondage->getChoix();
         // Construire un tableau associatif pour chaque choix avec le nombre de votes
-        foreach ($choix as $choixItem) {
-            // Compter le nombre de votes associés à ce choix
-            $listeChoix=$voteRepository->findAll();
-            $voteCount=0;
-            foreach ($listeChoix as $choixItem2) {
-                if($choixItem2->getId() == $choixItem->getId() ){
-                    $voteCount++;
+        $choixAvecVotes =[];
+        if($choix !== null)
+        {
+            foreach ($choix as $choixItem) {
+                // Compter le nombre de votes associés à ce choix
+                $listeChoix=$voteRepository->findAll();
+                $voteCount=0;
+                foreach ($listeChoix as $choixItem2) {
+                    if($choixItem2->getId() == $choixItem->getId() ){
+                        $voteCount++;
+                    }
                 }
+                // Ajouter le choix et son nombre de votes au tableau
+                $choixAvecVotes [] = [
+                    'id' => $choixItem->getId(),
+                    'titre' => $choixItem->getTitre(),
+                    'image' => $choixItem->getImageChoix(),
+                    'votes' => (int)$voteCount,
+                ];
             }
-            // Ajouter le choix et son nombre de votes au tableau
-            $choixAvecVotes[] = [
-                'id' => $choixItem->getId(),
-                'titre' => $choixItem->getTitre(),
-                'image' => $choixItem->getImageChoix(),
-                'votes' => (int)$voteCount,
-            ];
+            // Récupérer les commentaires du sondage
+
         }
         // Récupérer les commentaires du sondage
 
         $commentaires=$sondage->getCommentaires();
-        foreach ($commentaires as $commentaire) {
-            $owner=$commentaire->getOwner();
-            $commentaireAvecUtilisateur[]=[
-                'id' => $commentaire->getId(),
-                'username' => $owner->getUsername(),
-                'texte' => $commentaire->getTexte(),
-            ];
+        $commentaireAvecUtilisateur =[];
+        if($commentaires !== null)
+        {
+            foreach ($commentaires as $commentaire) {
+                $owner=$commentaire->getOwner();
+                $commentaireAvecUtilisateur[]=[
+                    'id' => $commentaire->getId(),
+                    'username' => $owner->getUsername(),
+                    'texte' => $commentaire->getTexte(),
+                ];
 
 
+            }
         }
 
         return $this->render('sondage/show.html.twig', [
@@ -258,4 +270,6 @@ final class SondageController extends AbstractController
 
         return $this->redirectToRoute('app_sondage_index', [], Response::HTTP_SEE_OTHER);
     }
+
+
 }

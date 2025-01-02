@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Signalement;
+use App\Entity\User;
 use App\Entity\Utilisateur;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -15,14 +16,14 @@ class SignalementType extends AbstractType
     {
         $builder
             ->add('raison')
-            /*->add('userSignaler', EntityType::class, [
-                'class' => Utilisateur::class,
+            ->add('userSignaler', EntityType::class, [
+                'class' => User::class,
                 'choice_label' => 'id',
             ])
             ->add('userSignaleur', EntityType::class, [
-                'class' => Utilisateur::class,
+                'class' => User::class,
                 'choice_label' => 'id',
-            ])*/
+            ])
         ;
     }
 

@@ -1,0 +1,66 @@
+{% extends '/profile/index.html.twig' %}
+
+{% block title %}User index{% endblock %}
+
+{% block body %}
+    {% block spinner %}
+        {{ parent() }}
+    {% endblock %}
+
+    {% block sidebar %}
+        {{ parent() }}
+    {% endblock %}
+    {% block content %}
+        <div class="content">
+            {% block navbar %}
+                {{ parent() }}
+            {% endblock %}
+            <h1>Liste de vos sondages</h1>
+
+            {% if sondages is empty %}
+                <p>Vous n'avez créé aucun sondage pour le moment.</p>
+            {% else %}
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Titre</th>
+                        <th>Description</th>
+                        <th>Publique</th>
+                        <th>CreatedAt</th>
+                        <th>Date_fin</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for sondageData in sondages %}
+                        <tr>
+
+                            <td>{{ sondageData.id }}</td>
+                            <td>{{ sondageData.titre }}</td>
+                            <td>{{ sondageData.description }}</td>
+                            <td>{{ sondageData.publique ? 'Yes' : 'No' }}</td>
+                            <td>{{ sondageData.createdAt ? sondageData.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                            <td>{{ sondageData.dateFin ? sondageData.dateFin|date('Y-m-d H:i:s') : '' }}</td>
+
+                            <td>
+                                <a class="btn btn-sm btn-primary" href="{{ path('app_profile_sondage_show', {'id': app.user.id, 'idS': sondageData.id}) }}">show</a>
+                                <a class="btn btn-sm btn-primary" href="{{ path('app_sondage_delete', {'id': sondageData.id}) }}">delete</a>
+
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="8">no records found</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+            {% endif %}
+
+
+        </div>
+
+    {% endblock %}
+{% endblock %}

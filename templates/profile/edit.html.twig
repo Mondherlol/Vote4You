@@ -1,0 +1,24 @@
+{% extends '/profile/index.html.twig' %}
+
+{% block title %}User index{% endblock %}
+
+{% block body %}
+    {% block spinner %}
+        {{ parent() }}
+    {% endblock %}
+
+    {% block sidebar %}
+        {{ parent() }}
+    {% endblock %}
+    {% block content %}
+        <div class="content">
+            {% block navbar %}
+                {{ parent() }}
+            {% endblock %}
+            <h1>Edit User</h1>
+
+            {{ include('user/_form.html.twig', {'button_label': 'Update'}) }}
+        </div>
+
+    {% endblock %}
+{% endblock %}

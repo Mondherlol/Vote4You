@@ -81,6 +81,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private bool $isVerified = false;
 
+    /**
+     * @var Collection<int, Signalement>
+     */
+    #[ORM\OneToMany(targetEntity: Signalement::class, mappedBy: 'userSignaleur')]
+    private Collection $signalementsByMe;
+
     /*#[ORM\Column]
     private bool $isVerified = false;
 */
@@ -91,6 +97,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->signalements = new ArrayCollection();
         $this->votes = new ArrayCollection();
         $this->commentaires = new ArrayCollection();
+        $this->signalementsByMe = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -373,6 +380,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setVerified(bool $isVerified): static
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Signalement>
+     */
+    public function getSignalementsByMe(): Collection
+    {
+        return $this->signalementsByMe;
+    }
+
+    public function addSignalementsByMe(Signalement $signalementsByMe): static
+    {
+        if (!$this->signalementsByMe->contains($signalementsByMe)) {
+            $this->signalementsByMe->add($signalementsByMe);
+            $signalementsByMe->setUserSignaleur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSignalementsByMe(Signalement $signalementsByMe): static
+    {
+        if ($this->signalementsByMe->removeElement($signalementsByMe)) {
+            // set the owning side to null (unless already changed)
+            if ($signalementsByMe->getUserSignaleur() === $this) {
+                $signalementsByMe->setUserSignaleur(null);
+            }
+        }
 
         return $this;
     }

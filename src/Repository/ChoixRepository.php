@@ -40,4 +40,15 @@ class ChoixRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function findBySondageId(int $sondageId): array
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.sondage = :sondageId')
+            ->setParameter('sondageId', $sondageId)
+            ->orderBy('c.id', 'ASC') // Trier par ID (optionnel)
+            ->getQuery()
+            ->getResult();
+    }
+
 }

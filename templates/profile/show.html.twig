@@ -1,0 +1,65 @@
+{% extends '/profile/index.html.twig' %}
+
+{% block title %}User index{% endblock %}
+
+{% block body %}
+    {% block spinner %}
+        {{ parent() }}
+    {% endblock %}
+
+    {% block sidebar %}
+        {{ parent() }}
+    {% endblock %}
+    {% block content %}
+        <div class="content">
+            {% block navbar %}
+                {{ parent() }}
+            {% endblock %}
+            <h1>User index</h1>
+
+
+            <table class="table">
+                <tbody>
+                <tr>
+                    <th>Id</th>
+                    <td>{{ user.id }}</td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td>{{ user.email }}</td>
+                </tr>
+                <tr>
+                    <th>Roles</th>
+                    <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
+                </tr>
+                <tr>
+                    <th>Password</th>
+                    <td>{{ user.password }}</td>
+                </tr>
+                <tr>
+                    <th>ProfilePic</th>
+                    <td>{{ user.profilePic }}</td>
+                </tr>
+                <tr>
+                    <th>DateFinBan</th>
+                    <td>{{ user.dateFinBan ? user.dateFinBan|date('Y-m-d H:i:s') : '' }}</td>
+                </tr>
+                <tr>
+                    <th>CreatedAt</th>
+                    <td>{{ user.createdAt ? user.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                </tr>
+                <tr>
+                    <th>Username</th>
+                    <td>{{ user.username }}</td>
+                </tr>
+                </tbody>
+            </table>
+
+
+            <a href="{{ path('app_profile_edit', {'id': user.id}) }}">edit</a>
+
+
+        </div>
+
+    {% endblock %}
+{% endblock %}

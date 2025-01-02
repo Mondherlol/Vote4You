@@ -20,6 +20,10 @@ class Signalement
     #[ORM\JoinColumn(nullable: false)]
     private ?User $userSignaler = null;
 
+    #[ORM\ManyToOne(inversedBy: 'signalementsByMe')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $userSignaleur = null;
+
 
     public function getId(): ?int
     {
@@ -46,6 +50,18 @@ class Signalement
     public function setUserSignaler(?User $userSignaler): static
     {
         $this->userSignaler = $userSignaler;
+
+        return $this;
+    }
+
+    public function getUserSignaleur(): ?User
+    {
+        return $this->userSignaleur;
+    }
+
+    public function setUserSignaleur(?User $userSignaleur): static
+    {
+        $this->userSignaleur = $userSignaleur;
 
         return $this;
     }

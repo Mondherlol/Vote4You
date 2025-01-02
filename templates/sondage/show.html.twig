@@ -50,6 +50,7 @@
         </tbody>
     </table>
     <h2>Choix associés</h2>
+    {% if choix|length > 0 %}
     <ul>
         {% for choix in choix %}
             <li>
@@ -61,7 +62,12 @@
             </li>
         {% endfor %}
     </ul>
+    {% else %}
+        <p>Aucun choix n'est associé à ce sondage.</p>
+    {% endif %}
     <h2>Commentaire associés</h2>
+    {% if commentaires|length > 0 %}
+
     <ul>
         {% for com in commentaires %}
          <li>
@@ -72,6 +78,9 @@
         {% endfor %}
 
     </ul>
+    {% else %}
+        <p>Aucun commentaire n'est associé à ce sondage.</p>
+    {% endif %}
 
 
 
