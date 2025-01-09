@@ -35,6 +35,8 @@ class HomeController extends AbstractController
                 'description' => $survey->getDescription(),
                 'tags' => $survey->getThemes()->map(fn($tag) => $tag->getLibelle())->toArray(),
                 'image_url' => $survey->getImage(),
+                'hasVoted' =>  $this->getUser() ? $sondageRepository->hasUserVoted($survey->getId(), $this->getUser()->getId() ) : false,
+
                 'user' => [
                     'name' => $survey->getOwner()->getUsername(),
                     'profile_picture_url' => $survey->getOwner()->getProfilePic(),
@@ -62,10 +64,12 @@ class HomeController extends AbstractController
         $surveys = !empty($query) ? $sondageRepository->findByTitleLike($query) : [];
         $formattedSurveys = [];
         foreach ($surveys as $survey) {
+
             $formattedSurveys[] = [
                 'id'=>$survey->getId(),
                 'title' => $survey->getTitre(),
                 'description' => $survey->getDescription(),
+                'hasVoted' =>  $this->getUser() ? $sondageRepository->hasUserVoted($survey->getId(), $this->getUser()->getId() ) : false,
                 'tags' => $survey->getThemes()->map(fn($tag) => $tag->getLibelle())->toArray(),
                 'image_url' => $survey->getImage(),
                 'user' => [

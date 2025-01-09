@@ -1,76 +1,89 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Inscription{% endblock %}
 
 {% block body %}
-    <!-- Display Flash Messages -->
+    <link rel="stylesheet" href="{{ asset('css/signup.css') }}">
+    <!-- Affichage des messages flash -->
     {% for flash_error in app.flashes('verify_email_error') %}
         <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
     {% endfor %}
 
     {% if app.user %}
         <div class="mb-3">
-            You are logged in as <strong>{{ app.user.userIdentifier }}</strong>, <a href="{{ path('app_logout') }}" class="btn btn-link">Logout</a>
+            Vous êtes connecté en tant que <strong>{{ app.user.userIdentifier }}</strong>, <a href="{{ path('app_logout') }}" class="btn btn-link">Déconnexion</a>
         </div>
     {% endif %}
+    <div class="container mt-3">
+        <div class="card shadow-lg">
+            <div class="card-header">
+                Inscription
+            </div>
+            <div class="card-body">
+                <!-- Messages flash -->
+                {% for flash_error in app.flashes('verify_email_error') %}
+                    <div class="alert alert-danger">{{ flash_error }}</div>
+                {% endfor %}
 
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card shadow-lg">
-                    <div class="card-header bg-primary text-white text-center">
-                        <h3>Register</h3>
+                {% if app.user %}
+                    <div class="mb-3">
+                        Vous êtes connecté en tant que <strong>{{ app.user.userIdentifier }}</strong>, <a href="{{ path('app_logout') }}" class="btn btn-link">Déconnexion</a>
                     </div>
-                    <div class="card-body">
-                        <form method="post" action="{{ path('app_register') }}" novalidate>
-                            {{ form_start(registrationForm) }}
+                {% endif %}
 
-                            <!-- Username Field -->
-                            <div class="mb-3">
-                                {{ form_label(registrationForm.username, 'Username', {'attr': {'class': 'form-label'}}) }}
-                                {{ form_widget(registrationForm.username, {'attr': {'class': 'form-control'}}) }}
-                                {{ form_errors(registrationForm.username) }}
-                            </div>
+                <!-- Début du formulaire -->
+                <form method="post" action="{{ path('app_register') }}" novalidate>
+                    {{ form_start(registrationForm) }}
 
-                            <!-- Email Field -->
-                            <div class="mb-3">
-                                {{ form_label(registrationForm.email, 'Email', {'attr': {'class': 'form-label'}}) }}
-                                {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control'}}) }}
-                                {{ form_errors(registrationForm.email) }}
-                            </div>
-
-                            <!-- Profile Picture Field -->
-                            <div class="mb-3">
-                                {{ form_label(registrationForm.profilePic, 'Profile Picture', {'attr': {'class': 'form-label'}}) }}
-                                {{ form_widget(registrationForm.profilePic, {'attr': {'class': 'form-control', 'type': 'file'}}) }}
-                                {{ form_errors(registrationForm.profilePic) }}
-                                <small class="text-muted">Téléchargez une nouvelle photo (formats acceptés : JPG, PNG).</small>
-
-                            </div>
-
-                            <!-- Password Field -->
-                            <div class="mb-3">
-                                {{ form_label(registrationForm.plainPassword, 'Password', {'attr': {'class': 'form-label'}}) }}
-                                {{ form_widget(registrationForm.plainPassword, {'attr': {'class': 'form-control'}}) }}
-                                {{ form_errors(registrationForm.plainPassword) }}
-                            </div>
-
-                            <!-- Terms Agreement Field -->
-                            <div class="mb-3 form-check">
-                                {{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'form-check-input'}}) }}
-                                {{ form_label(registrationForm.agreeTerms, 'I agree to the terms and conditions', {'attr': {'class': 'form-check-label'}}) }}
-                                {{ form_errors(registrationForm.agreeTerms) }}
-                            </div>
-
-                            <!-- Submit Button -->
-                            <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-primary btn-lg">Register</button>
-                            </div>
-
-                            {{ form_end(registrationForm) }}
-                        </form>
+                    <!-- Champ Nom d'utilisateur -->
+                    <div class="mb-3">
+                        {{ form_label(registrationForm.username, 'Nom d\'utilisateur', {'attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(registrationForm.username, {'attr': {'class': 'form-control', 'placeholder': 'Nom d\'utilisateur'}}) }}
+                        {{ form_errors(registrationForm.username) }}
                     </div>
-                </div>
+
+                    <!-- Champ Email -->
+                    <div class="mb-3">
+                        {{ form_label(registrationForm.email, 'Adresse e-mail', {'attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control', 'placeholder':'example@gmail.com'}}) }}
+                        {{ form_errors(registrationForm.email) }}
+                    </div>
+
+                    <!-- Champ Photo de profil -->
+                    <div class="mb-3">
+                        {{ form_label(registrationForm.profilePic, 'Photo de profil', {'attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(registrationForm.profilePic, {'attr': {'class': 'form-control', 'type': 'file'}}) }}
+                        {{ form_errors(registrationForm.profilePic) }}
+                        <small class="text-muted">Téléchargez une nouvelle photo (formats acceptés : JPG, PNG).</small>
+                    </div>
+
+                    <!-- Champ Mot de passe -->
+                    <div class="mb-3">
+                        {{ form_label(registrationForm.plainPassword, 'Mot de passe', {'attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(registrationForm.plainPassword, {'attr': {'class': 'form-control', 'placeholder':'Mot de passe'}}) }}
+                        <div style="color:red;">
+                            {{ form_errors(registrationForm.plainPassword) }}
+                        </div>
+
+                    </div>
+
+                    <!-- Champ Acceptation des termes -->
+                    <div class="mb-3 form-check">
+                        {{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'form-check-input'}}) }}
+                        {{ form_label(registrationForm.agreeTerms, 'J\'accepte les termes et conditions', {'attr': {'class': 'form-check-label'}}) }}
+                        {{ form_errors(registrationForm.agreeTerms) }}
+                    </div>
+
+                    <!-- Bouton Soumettre -->
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">S'inscrire</button>
+                    </div>
+
+                    {{ form_end(registrationForm) }}
+                </form>
+                <!-- Fin du formulaire -->
+                <h5>Vous avez déjà un compte ?         <a href="{{ path('app_login') }}" class="form-button">Connectez-vous</a>
+                </h5>
             </div>
         </div>
     </div>

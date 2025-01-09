@@ -68,6 +68,20 @@ class SondageRepository extends ServiceEntityRepository
         }, $query->getResult());
     }
 
+    public function hasUserVoted (int $sondageId, int $userId): bool
+    {
+        $query = $this->createQueryBuilder('s')
+            ->select('COUNT(v.id) AS voteCount')
+            ->leftJoin('s.choix', 'c')
+            ->leftJoin('c.votes', 'v')
+            ->where('s.id = :sondageId')
+            ->andWhere('v.user = :userId')
+            ->setParameter('sondageId', $sondageId)
+            ->setParameter('userId', $userId)
+            ->getQuery();
+
+        return (int) $query->getSingleScalarResult() > 0;
+    }
 
 
 

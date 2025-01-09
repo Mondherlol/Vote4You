@@ -3,73 +3,196 @@
 {% block title %}Vote pour {{ sondage.titre }}{% endblock %}
 
 {% block body %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="{{ asset('css/vote.css') }}">
 
-    <div class="container-vote">
-    <h1 class="main-title">{{ sondage.titre }}</h1>
-    <p class="description">{{ sondage.description }}</p>
 
-    <div class="vote-container">
-        <div class="swiper-container">
-            <div class="swiper-wrapper">
-                {% for choice in choices %}
-                    <div class="swiper-slide card" data-choice-id="{{ choice.id }}">
-                            <img src="{{ asset('uploads/choix/' ~ choice.imageChoix) }}" alt="{{ choice.titre }}" class="choice-image">
-                            <h3>{{ choice.titre }}</h3>
-                        </div>
+    <div class="header-sondage">
 
-                {% endfor %}
+        <div class="title_desc">
+            <h1 class="question"> {{ sondage.titre }}</h1>
+
+            {% if sondage.description %}
+                <p class="description">{{ sondage.description }}</p>
+            {% endif %}
+        </div>
+
+        <div class="owner">
+            <div class="avatar">
+                <img src="{{ owner.profilePic }}" alt="{{ owner.username }}">
+            </div>
+            <div class="owner-details">
+                <p class="username">{{ owner.username }}</p>
+                <p class="posted_date">
+                    Posté le {{ sondage.createdAt|date('d/m/Y') }} à {{ sondage.createdAt|date('H:i') }}
+                </p>
+
+                <button class="report-btn" onclick="openReportModal('{{ owner.id }}')">
+                    <span class="btn-text">Signaler</span>
+                </button>
+
             </div>
         </div>
-        <form method="POST" action="{{ path('submit_vote', { id: sondage.id }) }}" id="vote-form">
-            <input type="hidden" name="choices" id="selected-choices" value="">
-            <button type="submit" class="submit-button" id="submit-button" style="display: none;">Valider le vote</button>
-        </form>
+
     </div>
 
+
+    <div class="comments-section ">
+        <button class="toggle-comments-btn" onclick="toggleComments()">Masquer les commentaires (
+            {{ comments|length }}
+            )</button>
+        <div class="comments-panel visible">
+            {% for comment in comments %}
+                <div class="comment">
+                    <img
+                            src="{{ comment.owner.profilePic ? comment.owner.profilePic : 'https://ui-avatars.com/api/?name=' ~ comment.owner.username }}"
+                            alt="User Profile" class="comment-profile-pic">
+
+                    <div class="comment-content">
+                        <p class="comment-author">{{ comment.owner.username }}</p>
+                        <p class="comment-date">{{ comment.createdAt|date('d/m/Y H:i') }}</p>
+                        <p class="comment-text">{{ comment.texte }}</p>
+
+                    </div>
+                    <button onclick="openReportModal('{{ comment.owner.id }}')" class="report-comment-btn">
+                      Signaler ⚠️
+                    </button>
+                </div>
+            {% endfor %}
+
+
+            {% if comments|length == 0 %}
+                <p class="no-comments">Aucun commentaire pour le moment</p>
+            {% endif %}
+            <form  method="POST" action="{{ path('submit_commentaire', { id: sondage.id }) }}" id="commentaire-form"  class="add-comment-form">
+                <textarea name="contenu" id="contenu" class="add-comment-textarea" placeholder="Ajouter un commentaire..."></textarea>
+                <input type="submit" type="button" class="add-comment-btn" ></input>
+            </form>
+
+        </div>
+    </div>
+
+    <div class="slider-hint">
+        Glissez à gauche ou à droite pour voter
+        <i class="fa fa-arrow-right arrow-icon"></i>
+
+    </div>
+
+
+    <div class="tinder ">
+
+
+        <div class="tinder--status">
+            <i class="fa fa-remove"></i>
+            <i class="fa fa-heart"></i>
+        </div>
+
+        <div class="tinder--cards">
+            {% for choice in choices %}
+                <div class="tinder--card" data-choice-id="{{ choice.id }}">
+                    {% if choice.imageChoix %}
+                        <img src="{{ asset('uploads/choix/' ~ choice.imageChoix) }}" alt="{{ choice.titre }}">
+                    {% else %}
+                        <div class="no-image">Aucune image disponible</div>
+                    {% endif %}
+                    <h3>{{ choice.titre }}</h3>
+                    <p>
+                        Test
+                    </p>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="tinder--buttons">
+            <button id="nope"><i class="fa fa-remove"></i></button>
+            <button id="love"><i class="fa fa-heart"></i></button>
+        </div>
+    </div>
+
+    <form method="POST" action="{{ path('submit_vote', { id: sondage.id }) }}" id="vote-form" style="display: none;">
+        <input type="hidden" name="choices" id="selected-choices" value="">
+        <input type="hidden" name="user_id" value="{{ app.user.id }}">
+    </form>
+
+
+    <!-- Modal for reporting -->
+    <div id="reportModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h2>Signaler cet utilisateur</h2>
+            <form  method="POST" action="{{ path('submit_signalement') }}" id="signalement-form" >
+                <div>
+                    <label for="raison">Raison du signalement</label>
+                    <select name="raison" id="raison" onchange="toggleCustomRaison()">
+                        <option value="Contenu inapproprié">Contenu inapproprié</option>
+                        <option value="Comportement abusif">Comportement abusif</option>
+                        <option value="Spam">Spam</option>
+                        <option value="Autre">Autre</option>
+                    </select>
+                </div>
+
+                <!-- Custom reason input for 'Autre' -->
+                <div id="customRaisonContainer" style="display: none;">
+                    <label for="customRaison">Définissez la raison</label>
+                    <input type="text" name="customRaison" id="customRaison" placeholder="Veuillez préciser votre raison">
+                </div>
+
+                <div class="modal-buttons">
+                    <button type="button" onclick="closeReportModal()">Annuler</button>
+                    <input type="hidden"  name="reported_user_id"  id="reported_user_id" value="">
+                    <button type="submit">Envoyer le signalement</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <script src="{{ asset('js/vote.js') }}"></script>
+
     <script>
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const swiper = new Swiper('.swiper-container', {
-                effect: 'cards',
-                grabCursor: true,
-                cardsEffect: {
-                    slideShadows: true,
-                },
-                allowTouchMove: true,
-                on: {
-                    slideChangeTransitionEnd: checkLastSlide,
-                    slideNextTransitionStart: () => handleSwipe(true),
-                    slidePrevTransitionStart: () => handleSwipe(false)
-                }
-            });
-
-            const choices = {}; // Objet pour stocker les choix (OUI/NON)
-
-            function handleSwipe(isYes) {
-                const activeSlide = swiper.slides[swiper.activeIndex];
-                const choiceId = activeSlide.dataset.choiceId;
-
-                // Enregistrer le choix : true = OUI, false = NON
-                choices[choiceId] = isYes;
-
-                // Retirer la carte après le swipe
-                swiper.removeSlide(swiper.activeIndex);
-
-                // Vérifier s'il reste des cartes
-                checkLastSlide();
-            }
-
-            function checkLastSlide() {
-                if (swiper.slides.length === 0) {
-                    // Toutes les cartes ont été swipées
-                    document.getElementById('submit-button').style.display = 'block';
-                    document.getElementById('selected-choices').value = JSON.stringify(choices);
-                }
-            }
-        });
+        function toggleComments() {
+            const commentsPanel = document.querySelector('.comments-panel');
+            const toggleButton = document.querySelector('.toggle-comments-btn');
+            commentsPanel.classList.toggle('visible');
+            toggleButton.textContent = commentsPanel.classList.contains('visible')
+                ? 'Masquer les commentaires'
+                : 'Voir les commentaires (3)';
+        }
 
     </script>
 
-    </div>
+    <script>
+        // Open the report modal
+        function openReportModal(userId) {
+            document.getElementById('reportModal').style.display = 'block';
+            document.getElementById('reported_user_id').value = userId;
+
+        }
+
+        // Close the report modal
+        function closeReportModal() {
+            document.getElementById('reportModal').style.display = 'none';
+        }
+
+        // Show custom input if 'Autre' is selected
+        function toggleCustomRaison() {
+            const raisonSelect = document.getElementById('raison');
+            const customRaisonContainer = document.getElementById('customRaisonContainer');
+            const customRaisonInput = document.getElementById('customRaison');
+
+            if (raisonSelect.value === 'Autre') {
+                customRaisonContainer.style.display = 'block'; // Show input for custom reason
+                customRaisonInput.required = true; // Make the input required
+            } else {
+                customRaisonContainer.style.display = 'none'; // Hide input
+                customRaisonInput.required = false; // No longer required
+            }
+        }
+    </script>
+
 {% endblock %}
+
+

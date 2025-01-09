@@ -1,0 +1,135 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Déjà voté{% endblock %}
+
+
+{% block body %}
+    <div class="vote-container">
+        <h1 class="vote-header">Vous avez déjà voté pour ce sondage</h1>
+        <p class="vote-description">Souhaitez-vous supprimer vos anciens votes et revoter ?</p>
+
+        {% if existingVotes is not empty %}
+            <div class="vote-choices">
+                <h4>Vos choix précédents :</h4>
+                <ul>
+                    {% for vote in existingVotes %}
+                        <li class="vote-choice-item">
+                            <img  class="vote_img" src="{{ asset('uploads/choix/' ~ vote.idChoix.imageChoix) }}" alt="{{ vote.idChoix.titre }}">
+                            <i class="bi bi-dot"></i> {{ vote.idChoix.titre }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <div class="vote-actions">
+            <form method="POST" action="{{ path('app_vote_reset', { 'id': sondage.id }) }}">
+                <button type="submit" class="vote-btn vote-btn-yes">Oui, je veux revoter</button>
+            </form>
+            <a href="{{ path('app_vote_index') }}" class="vote-btn vote-btn-no">Non, revenir en arrière</a>
+        </div>
+    </div>
+
+    <style>
+
+
+        .vote-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+
+            background: #FFFFFF;
+            border-radius: 15px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            padding: 20px 30px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .vote-header {
+            font-size: 25px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .vote-description {
+            font-size: 25px;
+            font-family: 'Kap', sans-serif;
+            color: #484848;
+            margin-bottom: 20px;
+        }
+
+        .vote-choices {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .vote-choice-item {
+            font-size: 14px;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .vote-choice-item i {
+            font-size: 12px;
+            color: #e74c3c;
+            margin-right: 10px;
+        }
+
+        .vote-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .vote-btn {
+            font-size: 14px;
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-family: 'Springwood', sans-serif;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .vote-btn-yes {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: #ffffff;
+        }
+
+        .vote-btn-yes:hover {
+            background: linear-gradient(135deg, #ff6f61, #e74c3c);
+            transform: scale(1.05);
+        }
+
+        .vote-btn-no {
+            background: #484848;
+            color: #ffffff;
+        }
+
+        .vote-btn-no:hover {
+            background: #2c3e50;
+            transform: scale(1.05);
+        }
+
+        .vote_img {
+            width: 50px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+    </style>
+{% endblock %}

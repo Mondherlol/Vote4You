@@ -1,0 +1,195 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Résultats du sondage {{ sondage.titre }}{% endblock %}
+
+{% block body %}
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="{{ asset('css/vote.css') }}">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+
+  <div class="header-sondage">
+
+    <img src="{{ asset('uploads/sondages/' ~ sondage.image) }}"alt="Image du sondage" class="sondage-image">
+    <div class="title_desc">
+      <h1 class="question"> {{ sondage.titre }}</h1>
+
+      {% if sondage.description %}
+        <p class="description">{{ sondage.description }}</p>
+      {% endif %}
+    </div>
+
+    <div class="owner">
+      <div class="avatar">
+        <img src="{{ owner.profilePic }}" alt="{{ owner.username }}">
+      </div>
+      <div class="owner-details">
+        <p class="username">{{ owner.username }}</p>
+        <p class="posted_date">
+          Posté le {{ sondage.createdAt|date('d/m/Y') }} à {{ sondage.createdAt|date('H:i') }}
+        </p>
+
+        <button class="report-btn" onclick="openReportModal('{{ owner.id }}')">
+          <span class="btn-text">Signaler</span>
+        </button>
+
+      </div>
+    </div>
+
+  </div>
+
+<a href="{{ path('vote', { id: sondage.id }) }}" class="vote-button">
+  Je veux changer mon vote</a>
+  <div class="comments-section ">
+    <button class="toggle-comments-btn" onclick="toggleComments()">Masquer les commentaires (
+      {{ comments|length }}
+      )</button>
+    <div class="comments-panel visible">
+      {% for comment in comments %}
+        <div class="comment">
+          <img
+                  src="{{ comment.owner.profilePic ? comment.owner.profilePic : 'https://ui-avatars.com/api/?name=' ~ comment.owner.username }}"
+                  alt="User Profile" class="comment-profile-pic">
+
+          <div class="comment-content">
+            <p class="comment-author">{{ comment.owner.username }}</p>
+            <p class="comment-date">{{ comment.createdAt|date('d/m/Y H:i') }}</p>
+            <p class="comment-text">{{ comment.texte }}</p>
+
+          </div>
+          <button onclick="openReportModal('{{ comment.owner.id }}')" class="report-comment-btn">
+            Signaler ⚠️
+          </button>
+        </div>
+      {% endfor %}
+
+
+      {% if comments|length == 0 %}
+        <p class="no-comments">Aucun commentaire pour le moment</p>
+      {% endif %}
+      <form  method="POST" action="{{ path('submit_commentaire', { id: sondage.id }) }}" id="commentaire-form"  class="add-comment-form">
+        <textarea name="contenu" id="contenu" class="add-comment-textarea" placeholder="Ajouter un commentaire..."></textarea>
+        <input type="submit" type="button" class="add-comment-btn" ></input>
+      </form>
+
+    </div>
+  </div>
+  {% set totalVotes = 0 %}
+  {% for choice in choices %}
+    {% set totalVotes = totalVotes + votesPerChoice[choice.id].count %}
+  {% endfor %}
+
+  {% set sortedChoices = choices|sort((a, b) => votesPerChoice[b.id].count - votesPerChoice[a.id].count) %}
+
+
+  <div class="result-container">
+    <h2> ✨Résultats du sondage✨ </h2>
+    <div class="vote-container">
+      <div class="podium">
+        {% for choice in sortedChoices %}
+          <div class="choice-card {% if loop.first %} winner {% endif %}">
+            <h3>{{ choice.titre }}</h3>
+            <img src="{{ asset('uploads/choix/' ~ choice.imageChoix) }}" alt="{{ choice.titre }}" class="choice-image">
+            <div class="progress-bar-container">
+              <div class="progress-bar" style="width: {{ (votesPerChoice[choice.id].count / totalVotes) * 100 }}%;"></div>
+              <span class="percentage">{{ (votesPerChoice[choice.id].count / totalVotes) * 100 | round(0) }}%</span>
+            </div>
+            <div class="vote-count">
+              <p>{{ votesPerChoice[choice.id].count }} votes</p>
+            </div>
+            <div class="voters">
+              {% for user in votesPerChoice[choice.id].users %}
+                <div class="user-vote">
+                  <img src="{{ user.profilePic }}" alt="Photo de profil" class="profile-picture">
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+
+</div>
+  <!-- Modal for reporting -->
+  <div id="reportModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <h2>Signaler cet utilisateur</h2>
+      <form  method="POST" action="{{ path('submit_signalement') }}" id="signalement-form" >
+        <div>
+          <label for="raison">Raison du signalement</label>
+          <select name="raison" id="raison" onchange="toggleCustomRaison()">
+            <option value="Contenu inapproprié">Contenu inapproprié</option>
+            <option value="Comportement abusif">Comportement abusif</option>
+            <option value="Spam">Spam</option>
+            <option value="Autre">Autre</option>
+          </select>
+        </div>
+
+        <!-- Custom reason input for 'Autre' -->
+        <div id="customRaisonContainer" style="display: none;">
+          <label for="customRaison">Définissez la raison</label>
+          <input type="text" name="customRaison" id="customRaison" placeholder="Veuillez préciser votre raison">
+        </div>
+
+        <div class="modal-buttons">
+          <button type="button" onclick="closeReportModal()">Annuler</button>
+          <input type="hidden"  name="reported_user_id"  id="reported_user_id" value="">
+          <button type="submit">Envoyer le signalement</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+  <script src="{{ asset('js/vote.js') }}"></script>
+
+  <script>
+    function toggleComments() {
+      const commentsPanel = document.querySelector('.comments-panel');
+      const toggleButton = document.querySelector('.toggle-comments-btn');
+      commentsPanel.classList.toggle('visible');
+      toggleButton.textContent = commentsPanel.classList.contains('visible')
+              ? 'Masquer les commentaires'
+              : 'Voir les commentaires (3)';
+    }
+
+  </script>
+
+  <script>
+    // Open the report modal
+    function openReportModal(userId) {
+      document.getElementById('reportModal').style.display = 'block';
+      document.getElementById('reported_user_id').value = userId;
+
+    }
+
+    // Close the report modal
+    function closeReportModal() {
+      document.getElementById('reportModal').style.display = 'none';
+    }
+
+    // Show custom input if 'Autre' is selected
+    function toggleCustomRaison() {
+      const raisonSelect = document.getElementById('raison');
+      const customRaisonContainer = document.getElementById('customRaisonContainer');
+      const customRaisonInput = document.getElementById('customRaison');
+
+      if (raisonSelect.value === 'Autre') {
+        customRaisonContainer.style.display = 'block'; // Show input for custom reason
+        customRaisonInput.required = true; // Make the input required
+      } else {
+        customRaisonContainer.style.display = 'none'; // Hide input
+        customRaisonInput.required = false; // No longer required
+      }
+    }
+  </script>
+
+{% endblock %}
+
+

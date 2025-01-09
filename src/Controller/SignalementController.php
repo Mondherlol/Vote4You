@@ -23,6 +23,55 @@ final class SignalementController extends AbstractController
         ]);
     }
 
+    #[Route('/submit-signalement}', name: 'submit_signalement', methods: ['POST'])]
+    public function submitSignalement(
+        Request $request,
+        UserRepository $userRepository,
+        EntityManagerInterface $entityManager
+    ): Response {
+        // Récupérer l'utilisateur signalé
+        $id = $request->request->get('reported_user_id');
+        if (empty($id)) {
+            throw $this->createNotFoundException('User ID is required');
+        }
+        $userSignaler = $userRepository->find($id);
+        if (!$userSignaler) {
+            throw $this->createNotFoundException('User not found');
+        }
+
+        // Récupérer l'utilisateur connecté
+        $userSignaleur = $this->getUser();
+
+        // Créer un nouveau signalement
+        $signalement = new Signalement();
+        $signalement->setUserSignaler($userSignaler);
+        $signalement->setUserSignaleur($userSignaleur);
+
+        $raison = $request->request->get('raison');
+        if (empty($raison)) {
+            throw $this->createNotFoundException('Raison is required');
+        }
+
+        $signalement->setRaison($request->request->get('raison'));
+
+        // Sauvegarder le signalement dans la base de données
+        $entityManager->persist($signalement);
+        $entityManager->flush();
+
+        // Ajouter un message flash ou autre traitement si nécessaire
+        $this->addFlash('success', 'Utilisateur signalé avec succès');
+
+        // Rediriger vers la page précédente avec une query string
+        $referer = $request->headers->get('referer');
+        if ($referer) {
+            $urlWithSuccess = $referer . (parse_url($referer, PHP_URL_QUERY) ? '&' : '?') . 'success=Utilisateur signalé avec succès';
+            return $this->redirect($urlWithSuccess);
+        }
+
+        // Si aucun referer n'est présent, rediriger vers une page par défaut
+        return $this->redirectToRoute('app_signalement_index', ['success' => 'Utilisateur signalé avec succès']);
+    }
+
     #[Route('/new', name: 'app_signalement_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -101,4 +150,6 @@ final class SignalementController extends AbstractController
         // Rediriger vers la liste des signalements
         return $this->redirectToRoute('app_signalement_index');
     }
+
+
 }

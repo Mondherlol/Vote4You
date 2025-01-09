@@ -27,17 +27,40 @@ final class VoteController extends AbstractController
     }
 
     #[Route('/new', name: 'app_vote_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
+    public function new(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        VoteRepository $voteRepository
+    ): Response {
+        // Récupérer l'utilisateur connecté
+        $user = $this->getUser();
+        if ($user) {
+            $this->addFlash('error', 'Vous devez être connecté pour voter.');
+            return $this->redirectToRoute('app_login');
+        }
+
+        // Vérifier si l'utilisateur a déjà voté
+        $existingVotes = $voteRepository->findBy(['user' => $user]);
+        if (!empty($existingVotes)) {
+            $this->addFlash('warning', 'Vous avez déjà voté. Souhaitez-vous modifier vos votes ?');
+
+            return $this->render('vote/confirm_revote.html.twig', [
+                'existingVotes' => $existingVotes,
+            ]);
+        }
+
+        // Si l'utilisateur n'a pas encore voté, lui permettre de voter
         $vote = new Vote();
         $form = $this->createForm(VoteType::class, $vote);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $vote->setCreatedAt(new \DateTimeImmutable());
+            $vote->setUser($user); // Associer le vote à l'utilisateur
             $entityManager->persist($vote);
             $entityManager->flush();
 
+            $this->addFlash('success', 'Votre vote a été enregistré avec succès.');
             return $this->redirectToRoute('app_vote_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -46,6 +69,8 @@ final class VoteController extends AbstractController
             'form' => $form,
         ]);
     }
+
+
 
     #[Route('/{id}', name: 'app_vote_show', methods: ['GET'])]
     public function show(Vote $vote): Response
@@ -84,22 +109,32 @@ final class VoteController extends AbstractController
         return $this->redirectToRoute('app_vote_index', [], Response::HTTP_SEE_OTHER);
     }
     #[Route('/submit-vote/{id}', name: 'submit_vote', methods: ['POST'])]
-    public function submitVote(int $id, Request $request, SondageRepository $sondageRepository, EntityManagerInterface $entityManager): Response {
+    public function submitVote(
+        int $id,
+        Request $request,
+        SondageRepository $sondageRepository,
+        EntityManagerInterface $entityManager
+    ): Response {
         // Récupérer le sondage
         $sondage = $sondageRepository->find($id);
         if (!$sondage) {
             throw $this->createNotFoundException('Sondage introuvable.');
         }
 
-        $userId = $request->request->get('user_id');
-        $user = $entityManager->getRepository(User::class)->find($userId);
+        // Récupérer l'utilisateur connecté
+        $user = $this->getUser();
+        if (!$user) {
+            $this->addFlash('error', 'Vous devez être connecté pour voter.');
+            return $this->redirectToRoute('app_login');
+        }
 
         // Récupérer les choix sélectionnés
-        $selectedChoices = $request->request->all('choices');
+        $selectedChoices = json_decode($request->request->get('choices'), true);
         if (empty($selectedChoices)) {
             $this->addFlash('error', 'Veuillez sélectionner au moins un choix.');
             return $this->redirectToRoute('vote', ['id' => $id]);
         }
+
 
         // Enregistrer chaque vote dans la base de données
         foreach ($selectedChoices as $choiceId) {
@@ -110,9 +145,9 @@ final class VoteController extends AbstractController
 
             $vote = new Vote();
             $vote->setCreatedAt(new \DateTimeImmutable());
-            $vote->setAdresseIp($request->getClientIp()); // Récupérer l'adresse IP de l'utilisateur
+            $vote->setAdresseIp($request->getClientIp());
             $vote->setIdChoix($choice);
-            $vote->setIdUser($user); // Associe un utilisateur si nécessaire
+            $vote->setUser($user); // Associer l'utilisateur connecté
 
             $entityManager->persist($vote);
         }
@@ -120,13 +155,24 @@ final class VoteController extends AbstractController
         $entityManager->flush();
 
         $this->addFlash('success', 'Votre vote a été enregistré avec succès.');
-        return $this->redirectToRoute('home');
+        return $this->redirectToRoute('app_sondage_results', ['id' => $id]);
     }
 
+
     #[Route('/voter/{id}', name: 'vote')]
-    public function vote(int $id, SondageRepository $sondageRepository, UserRepository $userRepository): Response
-    {
-        $users = $userRepository->findAll();
+    public function vote(
+        int $id,
+        SondageRepository $sondageRepository,
+        VoteRepository $voteRepository,
+        UserRepository $userRepository
+    ): Response {
+        // Récupérer l'utilisateur connecté
+        $user = $this->getUser();
+
+        if (!$user) {
+            throw $this->createAccessDeniedException('Vous devez être connecté pour voter.');
+        }
+
 
         // Récupérer le sondage par son ID
         $sondage = $sondageRepository->find($id);
@@ -134,12 +180,68 @@ final class VoteController extends AbstractController
             throw $this->createNotFoundException('Sondage introuvable.');
         }
 
-        // Rendre la vue avec les détails du sondage et les choix associés
+        // Récuperer le créateur du sondage
+        $owner = $userRepository->find($sondage->getOwner());
+
+        // Vérifier si l'utilisateur a déjà voté
+        $voted = $sondageRepository->hasUserVoted($sondage->getId(), $user->getId());
+
+        if ($voted) {
+            // Rediriger vers la page de confirmation si des votes existent
+            return $this->render('vote/confirm_revote.html.twig', [
+                'sondage' => $sondage,
+                'existingVotes' => $voteRepository->findVotesByUserInSondage($user->getId(), $sondage->getId()),
+            ]);
+        }
+
+        // Si aucun vote existant, afficher la page de vote
         return $this->render('vote/new.html.twig', [
             'sondage' => $sondage,
-            'users' => $users,
-            'choices' => $sondage->getChoix(), // Les choix associés au sondage
+            'choices' => $sondage->getChoix(),
+            'owner' => $owner,
+            'comments' => $sondage->getCommentaires(),
+
         ]);
+    }
+
+    #[Route('/reset/{id}', name: 'app_vote_reset', methods: ['POST'])]
+    public function resetVotes(
+        int $id,
+        EntityManagerInterface $entityManager,
+        SondageRepository $sondageRepository,
+        VoteRepository $voteRepository): Response {
+        // Récupérer l'utilisateur connecté
+        $user = $this->getUser();
+        if (!$user) {
+            $this->addFlash('error', 'Vous devez être connecté pour effectuer cette action.');
+            return $this->redirectToRoute('app_login');
+        }
+
+        // Récuperer sondage
+        $sondage = $sondageRepository->find($id);
+        if (!$sondage) {
+            throw $this->createNotFoundException('Sondage introuvable.');
+        }
+
+        // Vérifier si l'utilisateur a déjà voté
+        $voted = $sondageRepository->hasUserVoted($sondage->getId(), $user->getId());
+
+        if(!$voted) {
+            $this->addFlash('error', 'Vous n\'avez pas encore voté pour ce sondage.');
+            return $this->redirectToRoute('vote', ['id' => $id]);
+        }
+
+        // Supprimer les votes de l'utilisateur pour ce sondage
+        $votes = $voteRepository->findVotesByUserInSondage($user->getId(), $sondage->getId());
+        foreach ($votes as $vote) {
+            $entityManager->remove($vote);
+        }
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Vos anciens votes ont été supprimés. Vous pouvez maintenant revoter.');
+        return $this->redirectToRoute('vote',
+            ['id' => $sondage->getId()]
+        );
     }
 
 

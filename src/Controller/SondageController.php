@@ -36,7 +36,7 @@ final class SondageController extends AbstractController
 
 
     #[Route('/new', name: 'app_sondage_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, ThemeRepository $themeRepository, UploaderHelper $uploaderHelper,UserRepository $userRepository): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, ThemeRepository $themeRepository, UploaderHelper $uploaderHelper, UserRepository $userRepository): Response
     {
 
         // Vérifier si l'utilisateur est connecté
@@ -85,7 +85,7 @@ final class SondageController extends AbstractController
             $choixData = $request->request->all('choix');
             $choixFiles = $request->files->all('choix');  // Récupère les fichiers
 
-          //Pour chaque choix
+            //Pour chaque choix
             foreach ($choixData as $index => $choixItem) {
                 if (!empty($choixItem['titreChoix'])) { // Vérifie que le titre est rempli
                     $choix = new Choix();
@@ -95,7 +95,7 @@ final class SondageController extends AbstractController
                         $imageFile = $choixFiles[$index]['imageChoixFile'];
 
                         if ($imageFile && $imageFile->isValid()) {
-                            $newFilename = uniqid().'.'.$imageFile->guessExtension();
+                            $newFilename = uniqid() . '.' . $imageFile->guessExtension();
                             $imageFile->move($this->getParameter('uploader.choix_image'), $newFilename);
                             $choix->setImageChoix($newFilename);
                         }
@@ -128,6 +128,45 @@ final class SondageController extends AbstractController
         ]);
     }
 
+    #[Route('/results/{id}', name: 'app_sondage_results', methods: ['GET'])]
+    public function show2(Sondage $sondage, VoteRepository $voteRepository): Response
+    {
+        // Récupérer tous les choix du sondage
+        $choices = $sondage->getChoix();
+
+        // Tableau pour stocker les votes de chaque choix
+        $votesPerChoice = [];
+
+        // Pour chaque choix, récupérer les votes et les utilisateurs
+        foreach ($choices as $choice) {
+            // Récupérer les votes pour ce choix
+            $votes = $voteRepository->findBy(['idChoix' => $choice]);
+
+            // Tableau pour stocker les utilisateurs ayant voté pour ce choix
+            $usersWhoVoted = [];
+            foreach ($votes as $vote) {
+                // Ajouter l'utilisateur associé au vote
+                $usersWhoVoted[] = $vote->getUser(); // Assure-toi que la méthode getUsername() existe dans ton entité User
+            }
+
+            // Stocker les votes et les utilisateurs dans le tableau
+            $votesPerChoice[$choice->getId()] = [
+                'count' => count($votes),
+                'users' => $usersWhoVoted,
+            ];
+        }
+
+        return $this->render('sondage/results.html.twig', [
+            'sondage' => $sondage,
+            'choices' => $choices,
+            'votesPerChoice' => $votesPerChoice,
+            'owner' => $sondage->getOwner(),
+            'comments' => $sondage->getCommentaires(),
+        ]);
+    }
+
+
+
     #[Route('/{id}', name: 'app_sondage_show', methods: ['GET'])]
     public function show(Sondage $sondage,VoteRepository $voteRepository, EntityManagerInterface $entityManager,UserRepository $userRepository): Response
     {
@@ -154,7 +193,6 @@ final class SondageController extends AbstractController
                     'votes' => (int)$voteCount,
                 ];
             }
-            // Récupérer les commentaires du sondage
 
         }
         // Récupérer les commentaires du sondage

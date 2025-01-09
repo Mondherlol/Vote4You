@@ -1,6 +1,8 @@
 
 body{
     background: linear-gradient(145deg, #98ff78, #2bdb83);
+    min-height: 100vh;
+    background-repeat: no-repeat;
 
 }
 @font-face {

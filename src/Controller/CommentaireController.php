@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Commentaire;
 use App\Form\CommentaireType;
 use App\Repository\CommentaireRepository;
+use App\Repository\SondageRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -77,5 +78,37 @@ final class CommentaireController extends AbstractController
         }
 
         return $this->redirectToRoute('app_commentaire_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/submit-commentaire/{id}', name: 'submit_commentaire', methods: ['POST'])]
+    public function submitCommentaire(
+        Request $request,
+        CommentaireRepository $commentaireRepository,
+        SondageRepository $sondageRepository,
+        EntityManagerInterface $entityManager,
+        int $id
+    ): Response {
+        $sondage = $sondageRepository->find($id);
+        if (!$sondage) {
+            throw $this->createNotFoundException('Sondage introuvable.');
+        }
+
+        $commentaire = new Commentaire();
+        $commentaire->setOwner($this->getUser());
+        $commentaire->setIdSondage($sondage);
+        $commentaire->setCreatedAt(new \DateTimeImmutable());
+
+        $contenu = $request->getPayload()->getString('contenu');
+        if (empty($contenu)) {
+            throw $this->createNotFoundException('Le contenu du commentaire ne peut pas être vide.');
+        }
+        $commentaire->setTexte($contenu);
+
+        $entityManager->persist($commentaire);
+        $entityManager->flush();
+
+        // rediriger où il était avant
+        return $this->redirect($request->headers->get('referer'));
+
     }
 }
